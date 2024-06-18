@@ -73,20 +73,20 @@ def event_handeling(running, rods, is_button_held,is_p1_clicked, is_p2_clicked):
                 # print(f"mouse held at ({mouse_x},{mouse_y})")
 
                 # Check if clicked on p1
-                upper_bound_x = rods[0].p1_position[0] + ROD_WIDTH
-                lower_bound_x = rods[0].p1_position[0] - ROD_WIDTH
-                upper_bound_y = rods[0].p1_position[1] + ROD_WIDTH
-                lower_bound_y = rods[0].p1_position[1] - ROD_WIDTH
+                upper_bound_x = rods[0].pin1.x + ROD_WIDTH
+                lower_bound_x = rods[0].pin1.x - ROD_WIDTH
+                upper_bound_y = rods[0].pin1.y + ROD_WIDTH
+                lower_bound_y = rods[0].pin1.y - ROD_WIDTH
                 if   lower_bound_x <= mouse_x <= upper_bound_x:
                     if  lower_bound_y <= mouse_y <= upper_bound_y:
                         is_p1_clicked = True
                         # print(f"mouse held at ({mouse_x},{mouse_y})")
 
                 # Check if clicked on p2               
-                upper_bound_x = rods[0].p2_position[0] + ROD_WIDTH
-                lower_bound_x = rods[0].p2_position[0] - ROD_WIDTH
-                upper_bound_y = rods[0].p2_position[1] + ROD_WIDTH
-                lower_bound_y = rods[0].p2_position[1] - ROD_WIDTH
+                upper_bound_x = rods[0].pin2.x + ROD_WIDTH
+                lower_bound_x = rods[0].pin2.x - ROD_WIDTH
+                upper_bound_y = rods[0].pin2.y + ROD_WIDTH
+                lower_bound_y = rods[0].pin2.y - ROD_WIDTH
                 if   lower_bound_x <= mouse_x <= upper_bound_x:
                     if  lower_bound_y <= mouse_y <= upper_bound_y:
                         is_p2_clicked = True
@@ -133,18 +133,15 @@ def main():
             # perform action when held
             if is_p1_clicked:
                 # print("Holding p1")
-                mouse_x, mouse_y = pygame.mouse.get_pos()
-
-                rods[0].p1_position[0] = mouse_x
-                rods[0].p1_position[1] = mouse_y
+                rods[0].pin1.update_pin_position(pygame.mouse.get_pos())
 
             elif is_p2_clicked:
                 # print("Holding p2")
                 mouse_x, mouse_y = pygame.mouse.get_pos()
 
                 p2 = [mouse_x, mouse_y]
-                dx = p2[0]-rods[0].p1_position[0]
-                dy = p2[1]-rods[0].p1_position[1]
+                dx = p2[0]-rods[0].pin1.x
+                dy = p2[1]-rods[0].pin1.y
 
                 angle = math.atan2(dx, dy)
                 angle_with_vertical =  angle

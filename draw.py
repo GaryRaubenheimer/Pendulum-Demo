@@ -33,14 +33,14 @@ def draw_rod(screen, rod):
     # print("draw rod")
 
     # draw line
-    pygame.draw.line(screen, rod.colour, rod.p1_position, rod.p2_position, ROD_WIDTH)
+    pygame.draw.line(screen, rod.bar.bar_colour, rod.pin1.position, rod.pin2.position, ROD_WIDTH)
     
     # draw begin point
-    pygame.draw.circle(screen, RED, rod.p1_position, ROD_WIDTH)
+    pygame.draw.circle(screen, RED, rod.pin1.position, ROD_WIDTH)
 
     # draw trace points
     if len(rod.trace_points)<TRACE_POINT_LENGHT:
-        rod.trace_points.append(rod.p2_position[:]) # [:]Create copy of the current position
+        rod.trace_points.append(rod.pin2.position[:]) # [:]Create copy of the current position
     else:
         rod.trace_points.pop(0)
 
@@ -49,7 +49,7 @@ def draw_rod(screen, rod):
         
     
     # draw end point
-    pygame.draw.circle(screen, RED, rod.p2_position, ROD_WIDTH)
+    pygame.draw.circle(screen, RED, rod.pin2.position, ROD_WIDTH)
 
     return screen, rod
     

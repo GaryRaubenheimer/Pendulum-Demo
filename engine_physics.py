@@ -9,16 +9,21 @@ DAMPING_FACTOR = 0.99   # friction
 
 def update_rods(rods):
     # print("update rod")
+    at_end=True
     for rod in rods:
-        update_angular_position(rod)
-        update_p2_position(rod)
+        rod = update_angular_position(rod,at_end)
+        rod.update_p2_position()
         # rod.print_rod_attributs()
     return rods
 
 
-def update_angular_position(rod):
-    torque = -rod.weight*GRAVITY*rod.lenght*math.sin(rod.angular_position)
-    rod.angular_accaleration = torque/rod.moment_of_inertia
+def update_angular_position(rod, at_end):
+    if at_end:
+        torque = -rod.rod_weight*GRAVITY*rod.rod_lenght*math.sin(rod.angular_position)
+        rod.angular_accaleration = torque/rod.moment_of_inertia_at_end
+    else:
+        torque = -rod.rod_weight*GRAVITY*rod.rod_lenght*math.sin(rod.angular_position)
+        rod.angular_accaleration = torque/rod.moment_of_inertia_at_center
 
     rod.angular_velocity += rod.angular_accaleration
     rod.angular_position += rod.angular_velocity
@@ -30,9 +35,6 @@ def update_angular_position(rod):
     elif rod.angular_position<(-2*math.pi):
         rod.angular_position = rod.angular_position + (2*math.pi)
 
+    return rod
 
-def update_p2_position(rod):
-    rod.p2_position[0] = rod.p1_position[0] + rod.lenght*math.sin(rod.angular_position)
-    rod.p2_position[1] = rod.p1_position[1] + rod.lenght*math.cos(rod.angular_position)
 
-    return rod.p2_position
