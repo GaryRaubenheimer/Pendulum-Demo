@@ -62,6 +62,8 @@ class Bar:
         elif self.angular_position<(-2*math.pi):
             self.angular_position = self.angular_position + (2*math.pi)
 
+        print(self.get_p2_position())
+
     def get_p2_position(self):
         p2_position = [0,0]
         p2_position[0] = self.p1_position[0] + self.lenght*math.sin(self.angular_position)
@@ -289,6 +291,8 @@ def main():
 
         # update game
         bars = update_bars(bars)
+
+        
 
         get_mouse_speed(prev_mouse_x, prev_mouse_y, prev_time)
         curr_mouse_x, curr_mouse_y = pygame.mouse.get_pos()
