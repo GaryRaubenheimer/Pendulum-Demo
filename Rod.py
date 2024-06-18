@@ -7,7 +7,7 @@ import time
 from engine_physics import update_p2_position
 
 #Classes--------------------------------------------
-class Bar:   
+class Rod:   
     
     p1_position = [0,0]
     p2_position = [0,0]
@@ -30,5 +30,5 @@ class Bar:
         return self.p2_position
 
 
-    def print_bar_attributs(self):
+    def print_rod_attributs(self):
         print(self.__dict__)
