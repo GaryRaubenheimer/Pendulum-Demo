@@ -31,3 +31,16 @@ while running:
 
 pygame.quit()
 sys.exit()
+
+
+
+
+"""
+loop_check=0
+        global loop_check
+        if loop_check in range(1000):
+            loop_check+=1
+        else:
+            loop_check = 0
+        print(loop_check)
+"""

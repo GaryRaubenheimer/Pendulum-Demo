@@ -20,12 +20,12 @@ class Rod:
         # create pins
         # pin 1
         pin1_weight=0
-        pin1_radius=0
+        pin1_radius=5
         pin1_position=p1_position
         self.pin1=pin(1,pin1_position, pin1_weight,pin1_radius)
         # pin 2
         pin2_weight=0
-        pin2_radius=0
+        pin2_radius=5
         pin2_position=self.create_p2_position(lenght)
         self.pin2=pin(2,pin2_position, pin2_weight,pin2_radius)
 
@@ -54,6 +54,7 @@ class Rod:
 
         return self.p2_position
 
+
     def update_p2_position(self):
         self.p2_position[0] = self.pin1.x + self.rod_lenght*math.sin(self.angular_position)
         self.p2_position[1] = self.pin1.y + self.rod_lenght*math.cos(self.angular_position)
@@ -71,7 +72,7 @@ class Rod:
 
 class bar:
     def __init__(self,lenght, weight, width,colour):
-        print("bar")
+        # print("bar")
         # self.bar_vector=pygame.math.Vector2()
         self.bar_lenght=lenght
         self.bar_weight=weight
@@ -81,7 +82,7 @@ class bar:
 
 class pin:
     def __init__(self,pin_id,position,weight,radius):
-        print("pin", pin_id)
+        # print("pin", pin_id)
         self.pin_vector=pygame.math.Vector2(position)
         self.x=self.pin_vector.x
         self.y=self.pin_vector.y
