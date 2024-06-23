@@ -85,18 +85,19 @@ def main():
 
     screen = init_screen()
     input = Input()
-    Time = Time()
+    time = Time()
     rods = create_rod_array(1)
 
     running = True
     while running:
         # update time 
-        Time.update()
+        time.update()
 
         # pygame event handeling
         running, input = event_handeling(running, input, rods)
 
         # update game
+        # handle input
         if input.mouse.is_mouse_button_held:        # perform action when held
             if input.mouse.left_click_held:
                 if input.mouse.collision_item != None:   # mouse is holding item
@@ -126,18 +127,19 @@ def main():
                         # print("Releasing p2")
 
                         mouse_velocity = input.mouse.get_velocity()
-                        rods[0].pin2.x_speed = mouse_velocity[0]
-                        rods[0].pin2.y_speed = mouse_velocity[1]
+                        # rods[0].pin2.x_speed = mouse_velocity[0]
+                        # rods[0].pin2.y_speed = mouse_velocity[1]
                         
                     else:
                         pass
-        
+        # udate rods
         rods = update_rods(rods)
+
+        # update input
         input.update()
 
         # draw graphics
-        for rod in rods:
-            screen, rod= draw_rod(screen, rod)
+        screen = draw_rods(screen, rods)
 
         # update the display
         clock.tick(GAME_SPEED)

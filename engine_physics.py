@@ -5,8 +5,8 @@ import math
 
 from Time import *
 
-GRAVITY = 9.81          # 9.81 m per second^2
-DAMPING_FACTOR = 0.98   # friction
+GRAVITY = 2#9.81          # 9.81 m per second^2
+DAMPING_FACTOR = 1#0.98   # friction
 
 """
 FROM: pressbooks.online.ucf.edu/phy2048tjb/chapter/15-4-pendulums
@@ -25,17 +25,24 @@ from Simple harmonic motion --> angular frequency =SQR(g/L)
 """
 
 def update_rods(rods):
+    # print("update rods")
     for rod in rods:
         rod = update_angular_position_SINGLE(rod)
         rod.update_p2_position()
     return rods
 
 def update_angular_position_SINGLE(rod):
-    theta = rod.angular_position - math.pi      # minus - 90deg to het from horizontal
+    theta = rod.angular_position #- math.pi      # minus - 90deg to het from horizontal
     angular_acceleration = -(GRAVITY/rod.rod_lenght)*math.sin(theta)
     rod.angular_velocity += angular_acceleration
+
+    if -0.0005<rod.angular_position/math.pi<0.0005:
+       rod.angular_position=0
+
     rod.angular_position += rod.angular_velocity
     rod.angular_velocity *= DAMPING_FACTOR
+
+    # print(rod.angular_position/math.pi)
 
     # limit angle for stability
     if rod.angular_position>(2*math.pi):
