@@ -2,7 +2,6 @@
 import sys
 import pygame
 import math
-import time
 
 
 class Input:

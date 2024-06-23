@@ -2,13 +2,13 @@
 import sys
 import pygame
 import math
-import time
 
 from Rod import *
 from engine_physics import *
 from draw import *
 from Input import *
 from colour import *
+from Time import *
 
 
 # Initialise global variable------------------------
@@ -81,15 +81,18 @@ def event_handeling(running, input, rods):
 
 # Main--------------------------------------------
 def main():
-    print("n-ple pedulum")
+    print("pedulum")
 
     screen = init_screen()
     input = Input()
-
+    Time = Time()
     rods = create_rod_array(1)
 
     running = True
     while running:
+        # update time 
+        Time.update()
+
         # pygame event handeling
         running, input = event_handeling(running, input, rods)
 
@@ -110,7 +113,6 @@ def main():
                         angle = math.atan2(dx, dy)
                         angle_with_vertical =  angle
         
-                        rods[0].angular_acceleration = 0
                         rods[0].angular_velocity = 0
                         rods[0].angular_position = angle_with_vertical
                     else:
@@ -126,20 +128,7 @@ def main():
                         mouse_velocity = input.mouse.get_velocity()
                         rods[0].pin2.x_speed = mouse_velocity[0]
                         rods[0].pin2.y_speed = mouse_velocity[1]
-
-                        '''
-                        mouse_x, mouse_y = input.mouse.get_position()
-                        p2 = [mouse_x, mouse_y]
-                        dx = p2[0]-rods[0].pin1.x
-                        dy = p2[1]-rods[0].pin1.y
-        
-                        angle = math.atan2(dx, dy)
-                        angle_with_vertical =  angle
-        
-                        rods[0].angular_acceleration = 0
-                        rods[0].angular_velocity = 0
-                        rods[0].angular_position = angle_with_vertical
-                        '''
+                        
                     else:
                         pass
         
