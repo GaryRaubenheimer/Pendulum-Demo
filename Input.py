@@ -17,9 +17,6 @@ class mouse:
         self.is_mouse_button_held = pygame.mouse.get_pressed(3)[0]
         self.left_click_held = pygame.mouse.get_pressed(3)[0]
         self.collision_item = None
-        self.prev_time = pygame.time.get_ticks()
-        self.curr_time = 0
-        self.elapsed_time = 0
 
 
     def collision_bound_check(self,pin):
@@ -59,20 +56,17 @@ class mouse:
     
 
     def get_displaysment(self):
-        self.curr_time = pygame.time.get_ticks()
-        self.elapsed_time = self.curr_time - self.prev_time
-        self.prev_time = self.curr_time
         return pygame.mouse.get_rel()
     
 
-    def get_velocity(self):
+    def get_velocity(self,time):
         displaysment = self.get_displaysment()
         dx = displaysment[0]
         dy = displaysment[1]
 
         if self.elapsed_time>0:
-            dx_speed = dx/self.elapsed_time
-            dy_speed = dy/self.elapsed_time
+            dx_speed = dx/time.elapsed_time
+            dy_speed = dy/time.elapsed_time
 
         return [dx_speed,dy_speed]
 

@@ -11,12 +11,12 @@ class Rod:
     
     p1_position = [0,0]
     p2_position = [0,0]
-    trace_points = []
 
 
     def __init__(self, p1_position, lenght, weight, angular_position, colour):
 
         self.angular_position = angular_position        # from vertical
+        self.trace_points = []
 
         # create pins
         # pin 1                 always origin pin
@@ -58,12 +58,14 @@ class Rod:
     def update_p2_position(self):
         self.p2_position[0] = self.pin1.x + self.rod_lenght*math.sin(self.angular_position)
         self.p2_position[1] = self.pin1.y + self.rod_lenght*math.cos(self.angular_position)
-        print(self.p2_position)
+        # print(self.p2_position)
         self.pin2.update_pin(self.p2_position)
 
 
     def print_rod_attributs(self):
         print(self.__dict__)
+        print("pin1 pos:" + str(self.p1_position))
+        print("pin2 pos:" + str(self.p2_position))
 
 
 class bar:

@@ -33,22 +33,28 @@ def create_rod_array(number_of_rods):
     angular_position = 0
     
     rods=[]
-    
+
     for i in range(number_of_rods):
         if i == 0:
             p1_pos = ORIGIN_POINT
-            lenght = 100
-            weight = 100
-            angular_position = math.pi/4
+            lenght = 10
+            weight = 1
+            angular_position = math.pi
             colour = BLACK
-            rods.append(Rod(p1_pos, lenght, weight, angular_position, colour))
-            continue
+            Rod1 = Rod(p1_pos, lenght, weight, angular_position, colour)
+            rods.append(Rod1)
+            # rods[0].print_rod_attributs()
+            # print("---------")
+        if i == 1:
+            p1_pos = rods[0].p2_position
+            lenght = 50
+            weight = 3
+            angular_position = math.pi/3
+            colour = BLACK
+            Rod2 = Rod(p1_pos, lenght, weight, angular_position, colour)
+            rods.append(Rod2)
+            # rods[0].print_rod_attributs()
 
-        p1_pos = rods[i-1].p2_posistion[1]
-        colour = (100,100,100)
-
-        rods.append(Rod(p1_pos, lenght, weight, angular_position, colour))
-    
     return rods
 
 
@@ -83,10 +89,12 @@ def event_handeling(running, input, rods):
 def main():
     print("pedulum")
 
+    time = Time()
     screen = init_screen()
     input = Input()
-    time = Time()
-    rods = create_rod_array(1)
+
+
+    rods = create_rod_array(2)
 
     running = True
     while running:
@@ -98,6 +106,7 @@ def main():
 
         # update game
         # handle input
+        '''
         if input.mouse.is_mouse_button_held:        # perform action when held
             if input.mouse.left_click_held:
                 if input.mouse.collision_item != None:   # mouse is holding item
@@ -131,7 +140,7 @@ def main():
                         # rods[0].pin2.y_speed = mouse_velocity[1]
                         
                     else:
-                        pass
+                        pass'''
         # udate rods
         rods = update_rods(rods)
 
@@ -139,7 +148,7 @@ def main():
         input.update()
 
         # draw graphics
-        screen = draw_rods(screen, rods)
+        screen, rods = draw_rods(screen, rods)
 
         # update the display
         clock.tick(GAME_SPEED)

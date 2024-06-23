@@ -5,7 +5,7 @@ import math
 
 from Rod import *
 from colour import *
-from pendulum import screen
+
 
 
 TRACE_POINT_LENGHT = 50
@@ -35,7 +35,8 @@ def draw_rods(screen, rods):
         pygame.draw.line(screen, rod.bar.bar_colour, rod.pin1.position, rod.pin2.position, rod.bar.bar_width)
 
         # draw begin point
-        pygame.draw.circle(screen, rod.pin1.colour, rod.pin1.position, rod.pin1.pin_radius)
+        if rod == rods[0]:
+            pygame.draw.circle(screen, rod.pin1.colour, rod.pin1.position, rod.pin1.pin_radius)
 
         # draw trace points
         if len(rod.trace_points)<TRACE_POINT_LENGHT:
@@ -44,12 +45,15 @@ def draw_rods(screen, rods):
             rod.trace_points.pop(0)
 
         for i in range(len(rod.trace_points)):
-            pygame.draw.circle(screen, GREEN, rod.trace_points[i], 1)
+            if rod == rods[1]:
+                pygame.draw.circle(screen, GREEN, rod.trace_points[i], 1)
+            elif rod == rods[0]:
+                pygame.draw.circle(screen, BLUE, rod.trace_points[i], 1)
 
 
         # draw end point
         pygame.draw.circle(screen, rod.pin2.colour, rod.pin2.position, rod.pin2.pin_radius)
         # print(rod.pin2.position)
 
-    return screen
+    return screen, rods
     
