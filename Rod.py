@@ -59,7 +59,7 @@ class Rod:
         self.p2_position[0] = self.pin1.x + self.rod_lenght*math.sin(self.angular_position)
         self.p2_position[1] = self.pin1.y + self.rod_lenght*math.cos(self.angular_position)
 
-        self.pin2.update_pin_position(self.p2_position)
+        self.pin2.update_pin(self.p2_position)
 
 
     def get_p2_position(self):
@@ -83,17 +83,42 @@ class bar:
 class pin:
     def __init__(self,pin_id,position,weight,radius):
         # print("pin", pin_id)
+
+        self.prev_time = pygame.time.get_ticks()
+        self.curr_time = 0
+        self.elapsed_time = 0
+
         self.pin_vector=pygame.math.Vector2(position)
         self.x=self.pin_vector.x
         self.y=self.pin_vector.y
+        
+        self.x_speed=0
+        self.y_speed=0
+        self.volicity=[0,0]
+        self.speed=0
+        
         self.position=[self.x,self.y]
         self.pin_id=pin_id
         self.pin_weight=weight
         self.pin_radius=radius
 
-    def update_pin_position(self,new_position):
+    def update_pin(self,new_position):
+        old_x =self.pin_vector.x 
+        old_y =self.pin_vector.y
+
         self.pin_vector.x=new_position[0]
         self.pin_vector.y=new_position[1]
         self.x=self.pin_vector.x
         self.y=self.pin_vector.y
+
+        self.curr_time = pygame.time.get_ticks()
+        self.elapsed_time = self.curr_time - self.prev_time
+        self.prev_time = self.curr_time
+
+        if self.elapsed_time>0:
+            self.x_speed=(self.x - old_x)/self.elapsed_time
+            self.y_speed=(self.y - old_y)/self.elapsed_time
+        
         self.position=[self.x,self.y]
+        self.volicity=[self.x_speed,self.y_speed]
+        self.speed=self.x_speed**2+self.y_speed**2*0.5

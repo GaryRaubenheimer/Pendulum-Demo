@@ -58,7 +58,7 @@ def event_handeling(running, input, rods):
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:              # is key pressed
-            keys = pygame.key.get_pressed()             # get pressed keys
+            keys = pygame.key.get_pressed()                 # get pressed keys
             if keys[pygame.K_ESCAPE]:
                 running = False       
         elif event.type == pygame.MOUSEMOTION:          # is mouse on window
@@ -66,13 +66,13 @@ def event_handeling(running, input, rods):
             pass
         elif event.type == pygame.MOUSEBUTTONDOWN:      # is mouse button clicked
             input.mouse.is_mouse_button_held = True
-            if event.button == 1:                       # is left click held
+            if event.button == 1:                           # is left click held
                 input.mouse.left_click_held = True
                 input.mouse.collision(rods)  
         elif event.type == pygame.MOUSEBUTTONUP:        # is mouse button released
             # check if left button is release
             input.mouse.is_mouse_button_held = False
-            if event.button == 1:                       # is left click released
+            if event.button == 1:                           # is left click released
                 input.mouse.left_click_held = False
                 input.mouse.collision(rods)
 
@@ -93,12 +93,13 @@ def main():
         # pygame event handeling
         running, input = event_handeling(running, input, rods)
 
+        # update game
         if input.mouse.is_mouse_button_held:        # perform action when held
             if input.mouse.left_click_held:
                 if input.mouse.collision_item != None:   # mouse is holding item
                     if input.mouse.collision_item == rods[0].pin1:
                         # print("Holding p1")
-                        rods[0].pin1.update_pin_position(pygame.mouse.get_pos())
+                        rods[0].pin1.update_pin(input.mouse.get_position())
                     elif input.mouse.collision_item == rods[0].pin2:
                         # print("Holding p2")
                         mouse_x, mouse_y = input.mouse.get_position()
@@ -114,8 +115,34 @@ def main():
                         rods[0].angular_position = angle_with_vertical
                     else:
                         pass
+            else:
+                if input.mouse.collision_item != None:   # mouse is releasing item        
+                    if input.mouse.collision_item == rods[0].pin1:
+                        # print("Releasing p1")
+                        rods[0].pin1.update_pin_position(pygame.mouse.get_pos())
+                    elif input.mouse.collision_item == rods[0].pin2:
+                        # print("Releasing p2")
 
-        # update game
+                        mouse_velocity = input.mouse.get_velocity()
+                        rods[0].pin2.x_speed = mouse_velocity[0]
+                        rods[0].pin2.y_speed = mouse_velocity[1]
+
+                        '''
+                        mouse_x, mouse_y = input.mouse.get_position()
+                        p2 = [mouse_x, mouse_y]
+                        dx = p2[0]-rods[0].pin1.x
+                        dy = p2[1]-rods[0].pin1.y
+        
+                        angle = math.atan2(dx, dy)
+                        angle_with_vertical =  angle
+        
+                        rods[0].angular_acceleration = 0
+                        rods[0].angular_velocity = 0
+                        rods[0].angular_position = angle_with_vertical
+                        '''
+                    else:
+                        pass
+        
         rods = update_rods(rods)
         input.update()
 

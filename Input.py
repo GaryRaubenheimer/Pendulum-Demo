@@ -49,6 +49,7 @@ class mouse:
 
 
     def update(self):
+        # print(self.get_velocity())
         self.get_displaysment()
         self.is_mouse_button_held = pygame.mouse.get_pressed(3)[0]
         self.left_click_held = pygame.mouse.get_pressed(3)[0]
@@ -70,8 +71,9 @@ class mouse:
         dx = displaysment[0]
         dy = displaysment[1]
 
-        dx_speed = dx/self.elapsed_time
-        dy_speed = dy/self.elapsed_time
+        if self.elapsed_time>0:
+            dx_speed = dx/self.elapsed_time
+            dy_speed = dy/self.elapsed_time
 
         return [dx_speed,dy_speed]
 
