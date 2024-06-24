@@ -5,8 +5,9 @@ import math
 
 from Time import *
 
-GRAVITY = 2#9.81          # 9.81 m per second^2
-DAMPING_FACTOR = 0.998   # friction
+GRAVITY = 0.3#9.81          # 9.81 m per second^2
+DAMPING_FACTOR =  1#0.999   # friction
+SPEED_LIMIT = 0.8
 
 """
 FOR SINGLE PENDULUM
@@ -70,11 +71,36 @@ def update_rods(rods):
 
     return rods
 
+
+def stabilise_angle(rod):
+    if rod.angular_position > math.pi:
+        rod.angular_position -= 2 * math.pi 
+    elif rod.angular_position < -math.pi:
+        rod.angular_position += 2 * math.pi
+    return rod 
+
+def stabilise_speed(rod):
+    if rod.angular_velocity>SPEED_LIMIT:
+        rod.angular_velocity = SPEED_LIMIT
+    elif rod.angular_velocity<-SPEED_LIMIT:
+        rod.angular_velocity = -SPEED_LIMIT
+    return rod
+
+def stabilise_DOUBLE(rods):
+    # limit angle and speed for stability
+    rods[0] = stabilise_angle(rods[0])
+    rods[1] = stabilise_angle(rods[1])
+    rods[0] = stabilise_speed(rods[0])
+    rods[1] = stabilise_speed(rods[1])    
+    return rods
+
+def stabilise_SINGLE(rod):
+    rod = stabilise_angle(rod)
+    rod = stabilise_speed(rod)
+    return rod
+
   
 def update_angular_position_DOUBLE(rods):
-
-    if rods[0].angular_position>(2*math.pi):
-        print("error")
 
     t1 = rods[0].angular_position
     t2 = rods[1].angular_position
@@ -115,28 +141,21 @@ def update_angular_position_DOUBLE(rods):
     rods[1].angular_position += rods[1].angular_velocity
     rods[1].angular_velocity *= DAMPING_FACTOR
 
+    rods = stabilise_DOUBLE(rods)
 
-    # limit angle for stability
     if rods[0].angular_position>(2*math.pi):
-        rods[0].angular_position = rods[0].angular_position - (2*math.pi)
-    elif rods[0].angular_position<(-2*math.pi):
-        rods[0].angular_position = rods[0].angular_position + (2*math.pi)
-
-    if rods[1].angular_position>=(2*math.pi):
-        rods[1].angular_position = rods[1].angular_position - (2*math.pi)
-    elif rods[1].angular_position<(-2*math.pi):
-        rods[1].angular_position = rods[1].angular_position + (2*math.pi)
+        print("error rod[0] > 2*pi: " + str(rods[0].angular_position)+ " " + str(rods[0].angular_velocity))
+    if rods[1].angular_position>(2*math.pi):
+        print("error rod[1] > 2*pi: " + str(rods[1].angular_position)+" " + str(rods[1].angular_velocity))
     
-    if rods[0].angular_position>(2*math.pi):
-        print("error")
-
-
-    if -0.0005<rods[0].angular_position/math.pi<0.0005:
+    if -0.0005<rods[0].angular_position/math.pi<0.0005 and -0.00005<rods[0].angular_velocity/math.pi<0.00005:
         rods[0].angular_position=0
-        if -0.0005<rods[1].angular_position/math.pi<0.0005:
-            rods[1].angular_position=0
+        rods[0].angular_velocity=0
+    if -0.0005<rods[1].angular_position/math.pi<0.0005 and -0.00005<rods[1].angular_velocity/math.pi<0.00005:
+        rods[1].angular_position=0
+        rods[1].angular_velocity=0
 
-    print(rods[0].angular_position/math.pi)
+    # print(str(rods[1].angular_position/math.pi) + " " +str(rods[1].angular_velocity))
     return rods
 
 
@@ -154,63 +173,6 @@ def update_angular_position_SINGLE(rod):
     # print(rod.angular_position/math.pi)
 
     # limit angle for stability
-    if rod.angular_position>(2*math.pi):
-        rod.angular_position = rod.angular_position - (2*math.pi)
-    elif rod.angular_position<(-2*math.pi):
-        rod.angular_position = rod.angular_position + (2*math.pi)
+    rod = stabilise_SINGLE(rod)
 
     return rod
-
-
-
-
-
-"""
-def update_rods(rods):
-    # print("update rod")
-    at_end=True
-    for rod in rods:
-        rod = update_angular_velocity(rod)
-        rod = update_angular_position(rod,at_end)
-        rod.update_p2_position()
-        # rod.print_rod_attributs()
-    return rods
-
-def update_angular_velocity(rod):
-    #rod.angular_velocity=rod.pin2.speed/rod.rod_lenght
-    return rod
-
-def update_angular_position(rod, at_end):
-    if at_end:
-        torque = -rod.rod_weight*GRAVITY*rod.rod_lenght*math.sin(rod.angular_position)
-        # print(torque)
-        if -100<torque<100:
-            torque=0
-
-        # print(torque)
-        # print("-------")
-        rod.angular_accaleration = torque/rod.moment_of_inertia_at_end
-    else:
-        torque = -rod.rod_weight*GRAVITY*rod.rod_lenght*math.sin(rod.angular_position)
-        #if -0.1<torque<0.1:
-        #    torque=0
-        rod.angular_accaleration = torque/rod.moment_of_inertia_at_center
-
-    rod.angular_velocity += rod.angular_accaleration
-    rod.angular_position += rod.angular_velocity
-    # print(rod.angular_position/math.pi)
-    if -0.0005<rod.angular_position/math.pi<0.0005:
-       rod.angular_position=0
-    # print(rod.angular_position/math.pi)
-    rod.angular_velocity *= DAMPING_FACTOR
-
-    # limit angle for stability
-    if rod.angular_position>(2*math.pi):
-        rod.angular_position = rod.angular_position - (2*math.pi)
-    elif rod.angular_position<(-2*math.pi):
-        rod.angular_position = rod.angular_position + (2*math.pi)
-
-    return rod
-
-
-"""
