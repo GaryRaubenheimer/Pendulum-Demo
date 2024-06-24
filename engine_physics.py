@@ -1,13 +1,9 @@
 # Import--------------------------------------------
-import sys
-import pygame
 import math
-
-from Time import *
 
 GRAVITY = 0.3#9.81          # 9.81 m per second^2
 DAMPING_FACTOR =  1#0.999   # friction
-SPEED_LIMIT = 0.8
+SPEED_LIMIT = 0.6
 
 """
 FOR SINGLE PENDULUM
@@ -49,8 +45,6 @@ denom = L1(2*m1+m2-m2cos(2*t1-2t2))
 angular acceleration of bottom rod
 num = 2sin(t1-t2)*(w1*w1*L1*(m1+m2) + g(m1+m2)cost1 + w2*w2*L2*m2*cos(t1-t2))
 denom = L2*(2*m1 + m2 - m2cos(2*t1-2*t2))
-
-
 """
 
 def update_rods(rods):
@@ -58,17 +52,13 @@ def update_rods(rods):
     if len(rods) == 1:
         rods[0] = update_angular_position_SINGLE(rods[0])
         rods[0].update_p2_position()
-    elif len(rods) == 2:
-        # print(rods[1].p1_position)
-        # rods[1].p1_position=rods[0].p2_position
-        
+    elif len(rods) == 2:        
         update_angular_position_DOUBLE(rods)
         rods[0].update_p2_position()
         rods[1].update_p2_position()
 
         pos=rods[0].pin2.position
         rods[1].pin1.update_pin(pos)
-
     return rods
 
 
@@ -154,25 +144,19 @@ def update_angular_position_DOUBLE(rods):
     if -0.0005<rods[1].angular_position/math.pi<0.0005 and -0.00005<rods[1].angular_velocity/math.pi<0.00005:
         rods[1].angular_position=0
         rods[1].angular_velocity=0
-
-    # print(str(rods[1].angular_position/math.pi) + " " +str(rods[1].angular_velocity))
     return rods
 
 
 def update_angular_position_SINGLE(rod):
-    theta = rod.angular_position #- math.pi      # minus - 90deg to het from horizontal
+    theta = rod.angular_position 
     angular_acceleration = -(GRAVITY/rod.rod_lenght)*math.sin(theta)
     rod.angular_velocity += angular_acceleration
 
-    if -0.0005<rod.angular_position/math.pi<0.0005:
+    if -0.0005<rod.angular_position/math.pi<0.0005 and -0.00005<rod.angular_velocity/math.pi<0.00005:
        rod.angular_position=0
+       rod.angular_velocity=0
 
     rod.angular_position += rod.angular_velocity
     rod.angular_velocity *= DAMPING_FACTOR
-
-    # print(rod.angular_position/math.pi)
-
-    # limit angle for stability
     rod = stabilise_SINGLE(rod)
-
     return rod

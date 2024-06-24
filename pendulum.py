@@ -39,7 +39,7 @@ def create_rod_array(number_of_rods):
             p1_pos = ORIGIN_POINT
             lenght = 100
             weight = 5
-            angular_position = math.pi
+            angular_position = math.pi/3
             colour = BLACK
             Rod1 = Rod(p1_pos, lenght, weight, angular_position, colour)
             rods.append(Rod1)
@@ -48,8 +48,8 @@ def create_rod_array(number_of_rods):
         if i == 1:
             p1_pos = rods[0].p2_position
             lenght = 50
-            weight = 1
-            angular_position = math.pi/2
+            weight = 2
+            angular_position = math.pi
             colour = BLACK
             Rod2 = Rod(p1_pos, lenght, weight, angular_position, colour)
             rods.append(Rod2)
@@ -93,13 +93,15 @@ def main():
     screen = init_screen()
     input = Input()
 
-
     rods = create_rod_array(2)
 
     running = True
     while running:
         # update time 
         time.update()
+
+        # update input
+        input.update()
 
         # pygame event handeling
         running, input = event_handeling(running, input, rods)
@@ -143,9 +145,6 @@ def main():
                         pass'''
         # udate rods
         rods = update_rods(rods)
-
-        # update input
-        input.update()
 
         # draw graphics
         screen, rods = draw_rods(screen, rods)
