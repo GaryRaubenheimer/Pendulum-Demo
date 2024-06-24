@@ -32,7 +32,6 @@ class mouse:
                 return True
         return False
 
-
     def collision(self,rods):
         # Check collision on p1
         if self.collision_bound_check(rods[0].pin1) == True:
@@ -43,21 +42,17 @@ class mouse:
         else:
             self.collision_item = None
 
-
     def update(self):
         # print(self.get_velocity())
         self.get_displaysment()
         self.is_mouse_button_held = pygame.mouse.get_pressed(3)[0]
         self.left_click_held = pygame.mouse.get_pressed(3)[0]
-    
 
     def get_position(self):
         return pygame.mouse.get_pos()
     
-
     def get_displaysment(self):
         return pygame.mouse.get_rel()
-    
 
     def get_velocity(self,time):
         displaysment = self.get_displaysment()
@@ -69,17 +64,3 @@ class mouse:
             dy_speed = dy/time.elapsed_time
 
         return [dx_speed,dy_speed]
-
-
-'''
-                mouse_x, mouse_y = event.pos
-                # print(f"mouse released at ({mouse_x},{mouse_y})")
-                # release p1 if held
-                if is_p1_clicked:
-                    is_p1_clicked = False
-                    # print("release p1")
-                # release p2 if held
-                if is_p2_clicked:
-                    is_p2_clicked = False
-                    # print("release p2")
-'''

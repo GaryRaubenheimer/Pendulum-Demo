@@ -4,7 +4,6 @@ import pygame
 import math
 
 class Time:   
-
     def __init__(self):
         self.prev_time = pygame.time.get_ticks()
         self.curr_time = 0
