@@ -1,10 +1,11 @@
 # Import--------------------------------------------
 import math
+from pendulum import SINGLE,DOUBLE
 
 GRAVITY = 0.3#9.81          # 9.81 m per second^2
-FRICTION = 0.00
+FRICTION = 0.0 * 0.5
 DAMPING_FACTOR =  1 - FRICTION 
-SPEED_LIMIT = 0.6
+SPEED_LIMIT = 0.5
 
 """
 FOR SINGLE PENDULUM
@@ -48,20 +49,36 @@ num = 2sin(t1-t2)*(w1*w1*L1*(m1+m2) + g(m1+m2)cost1 + w2*w2*L2*m2*cos(t1-t2))
 denom = L2*(2*m1 + m2 - m2cos(2*t1-2*t2))
 """
 
-def update_rods(rods):
+def calc_trace_points(rod):
+    # calc trace points
+    if len(rod.trace_points)<rod.TRACE_POINT_LENGHT:
+        rod.trace_points.append(rod.pin2.position[:]) # [:]Create copy of the current position
+    else:
+        rod.trace_points.pop(0)
+
+def update_rods(rods,pen_type):
     # print("update rods")
-    if len(rods) == 1:
-        rods[0] = update_angular_position_SINGLE(rods[0])
-        rods[0].update_p2_position()
-    elif len(rods) == 2:        
-        update_angular_position_DOUBLE(rods)
-        rods[0].update_p2_position()
-        rods[1].update_p2_position()
-
-        pos=rods[0].pin2.position
-        rods[1].pin1.update_pin(pos)
+    if pen_type == SINGLE:
+        for rod in rods:
+            calc_trace_points(rod)
+            if FRICTION!= 1/0.5:
+                rod = update_angular_position_SINGLE(rod)
+            rod.update_p2_position()
+    elif pen_type == DOUBLE:
+        for rod in rods:
+            calc_trace_points(rod)
+            if rod.type == SINGLE:
+                if FRICTION!= 1*0.5:
+                    rod = update_angular_position_SINGLE(rod)
+                rod.update_p2_position()
+            elif rod.type == DOUBLE:
+                if FRICTION!= 1*0.5:
+                    update_angular_position_DOUBLE(rods)
+                rods[0].update_p2_position()
+                rods[1].update_p2_position()
+                pos=rods[0].pin2.position
+                rods[1].pin1.update_pin(pos)
     return rods
-
 
 def stabilise_angle(rod):
     if rod.angular_position > math.pi:
@@ -92,7 +109,6 @@ def stabilise_SINGLE(rod):
 
   
 def update_angular_position_DOUBLE(rods):
-
     t1 = rods[0].angular_position
     t2 = rods[1].angular_position
 

@@ -1,5 +1,4 @@
 # Import--------------------------------------------
-import sys
 import pygame
 import math
 
@@ -22,14 +21,9 @@ class mouse:
         self.prev_state = 0
 
     def update(self,time):
-        # print(self.get_velocity())
-        # self.get_displaysment()
         self.prev_mouse_pos = self.curr_mouse_pos
         self.curr_mouse_pos = self.get_position()
         self.velocity = self.get_velocity(time)
-
-        # self.is_mouse_button_held = pygame.mouse.get_pressed(3)[0]
-        # self.left_click_held = pygame.mouse.get_pressed(3)[0]
 
     def collision_bound_check(self,pin):
         mouse_x, mouse_y = self.get_position()
@@ -44,16 +38,19 @@ class mouse:
                 return True
         return False
 
-    def collision(self,rods):
-        for rod in rods:
-            # Check collision on p1
-            if self.collision_bound_check(rod.pin1) == True:
-                self.collision_item = rod.pin1
-            # Check collision on p2               
-            elif self.collision_bound_check(rod.pin2) == True:
-                self.collision_item = rod.pin2
-            else:
-                self.collision_item = None
+    def collision(self,pen_array):
+        for pen in pen_array:
+            for rod in pen.rods:
+                # Check collision on p1
+                if self.collision_bound_check(rod.pin1) == True:
+                    self.collision_item = [pen,rod.pin1]
+                    break
+                # Check collision on p2               
+                elif self.collision_bound_check(rod.pin2) == True:
+                    self.collision_item = [pen,rod.pin2]
+                    break
+                # else:
+                #     self.collision_item = None
 
     def get_position(self):
         return pygame.mouse.get_pos()
@@ -63,12 +60,13 @@ class mouse:
         dy = self.curr_mouse_pos[1] - self.prev_mouse_pos[1]
         distance = [dx,dy]
         return distance
-        #return pygame.mouse.get_rel()
 
     def get_velocity(self,time):
         distance = self.get_displaysment()
         dx = distance[0]
         dy = distance[1]
+        dx_speed = 0
+        dy_speed = 0
         if time.elapsed_time>0:
             dx_speed = dx/time.elapsed_time
             dy_speed = dy/time.elapsed_time
