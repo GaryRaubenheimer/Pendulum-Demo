@@ -1,3 +1,75 @@
+import pygame
+import math
+
+# Initialize Pygame
+pygame.init()
+
+# Set up the display
+width, height = 800, 600
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Mouse Movement Velocity and Angle")
+
+# Define colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+# Variables to store mouse positions and velocity
+prev_mouse_pos = None
+current_mouse_pos = None
+velocity = (0, 0)
+angle = 0
+
+# Main loop
+running = True
+clock = pygame.time.Clock()
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Get the current mouse position
+    current_mouse_pos = pygame.mouse.get_pos()
+    
+    # Calculate velocity if we have a previous mouse position
+    if prev_mouse_pos is not None:
+        delta_x = current_mouse_pos[0] - prev_mouse_pos[0]
+        delta_y = current_mouse_pos[1] - prev_mouse_pos[1]
+        velocity = (delta_x, delta_y)
+        print(math.degrees(math.atan2(delta_x, delta_y)))
+        # Calculate the angle with respect to the vertical axis (y-axis)
+        #if delta_y != 0:
+        angle = 180 - math.degrees(math.atan2(delta_x, delta_y))
+        #else:
+        #    angle = 90 if delta_x > 0 else 270
+        if delta_y == 0 and delta_x == 0:
+            angle =0
+        else:
+            angle = 180 - math.degrees(math.atan2(delta_x, delta_y))
+
+    # Store the current mouse position as the previous position for the next frame
+    prev_mouse_pos = current_mouse_pos
+
+    # Clear the screen
+    screen.fill(WHITE)
+
+    # Display the velocity and angle
+    font = pygame.font.Font(None, 36)
+    text_velocity = font.render(f"Velocity: {velocity}", True, BLACK)
+    text_angle = font.render(f"Angle: {angle:.2f} degrees", True, BLACK)
+    screen.blit(text_velocity, (20, 20))
+    screen.blit(text_angle, (20, 60))
+
+    # Update the display
+    pygame.display.flip()
+
+    # Cap the frame rate
+    clock.tick(60)
+
+# Quit Pygame
+pygame.quit()
+
+'''
 
 import pygame
 import math
@@ -74,7 +146,7 @@ while running:
 
 pygame.quit()
 
-
+'''
 
 '''
 
@@ -217,3 +289,4 @@ loop_check=0
 """
 
 '''
+

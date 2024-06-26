@@ -18,12 +18,12 @@ class Rod:
         # create pins
         # pin 1                 always origin pin
         pin1_weight=0
-        pin1_radius=4
+        pin1_radius=5
         pin1_position=p1_position
         self.pin1=pin(1,pin1_position, pin1_weight,pin1_radius,GREY,True)
         # pin 2                 always not origin pin
         pin2_weight=weight
-        pin2_radius=6
+        pin2_radius=15
         pin2_position=self.create_p2_position(lenght)
         self.pin2=pin(2,pin2_position, pin2_weight,pin2_radius,RED,False)
 

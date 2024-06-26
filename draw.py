@@ -20,7 +20,7 @@ def init_screen():
     return screen
 
 
-def draw_rods(screen, rods):
+def draw_rods(screen, rods,input):
     # print("draw rods")
     for rod in rods:
          # draw trace points
@@ -48,5 +48,9 @@ def draw_rods(screen, rods):
 
         # draw end point
         pygame.draw.circle(screen, rod.pin2.colour, rod.pin2.position, rod.pin2.pin_radius)
+
+        #draw mouse click
+        if(input.mouse.left_click_held):
+            pygame.draw.circle(screen, DARK_YELLOW, input.mouse.get_position(), 3)
     return screen, rods
     

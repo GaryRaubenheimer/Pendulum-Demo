@@ -5,7 +5,14 @@ import math
 
 class Time:   
     def __init__(self):
-        self.prev_time = pygame.time.get_ticks()
+        if not pygame.get_init():
+            pygame.init()
+            # TO DO: test if not clock then activate clock 
+            # clock = pygame.time.Clock() 
+            
+        self.prev_time = pygame.time.get_ticks()    
+        #Return the number of milliseconds since pygame.init() was called. initialized this will always be 0.
+
         self.curr_time = 0
         self.elapsed_time = 0
     

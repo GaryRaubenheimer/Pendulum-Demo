@@ -2,7 +2,8 @@
 import math
 
 GRAVITY = 0.3#9.81          # 9.81 m per second^2
-DAMPING_FACTOR =  1#0.999   # friction
+FRICTION = 0.00
+DAMPING_FACTOR =  1 - FRICTION 
 SPEED_LIMIT = 0.6
 
 """
