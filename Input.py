@@ -1,60 +1,64 @@
-# Import--------------------------------------------
-import pygame
 import math
 
-class Input:
-    def __init__(self):
-        self.mouse=mouse()
-    
-    def update(self,time):
-        self.mouse.update(time)
+from Pendulum_Demo import pygame
+from constants import *
 
-
-class mouse:
+class Mouse:
     def __init__(self):
-        self.is_mouse_button_held = pygame.mouse.get_pressed(3)[0]
-        self.left_click_held = pygame.mouse.get_pressed(3)[0]
+        print("create mouse")
+        self.check_buttons()
         self.collision_item = None
         self.prev_mouse_pos = self.get_position()
         self.curr_mouse_pos = [0,0]
         self.velocity =  [0,0]
-        self.prev_state = 0
+        self.prev_state = False
 
     def update(self,time):
         self.prev_mouse_pos = self.curr_mouse_pos
         self.curr_mouse_pos = self.get_position()
         self.velocity = self.get_velocity(time)
+    
+    def get_position(self):
+        return pygame.mouse.get_pos()
 
-    def collision_bound_check(self,pin):
+
+    def check_buttons(self):
+        mouse_buttons = pygame.mouse.get_pressed()
+        if mouse_buttons[0]:    #Left mouse
+            self.left_held = True
+        else:
+            self.left_held = False
+        if mouse_buttons[1]:    #Middle mouse
+            self.middle_held = True
+        else:
+            self.middle_held = False
+        if mouse_buttons[2]:    #Right mouse
+            self.right_held = True
+        else:
+            self.right_held = False
+        
+
+    def collision_pin_check(self,pin):
         mouse_x, mouse_y = self.get_position()
-        # print(f"mouse held at ({mouse_x},{mouse_y})")
-        upper_bound_x = pin.x + pin.pin_radius
-        lower_bound_x = pin.x - pin.pin_radius
-        upper_bound_y = pin.y + pin.pin_radius
-        lower_bound_y = pin.y - pin.pin_radius
+        upper_bound_x = WIDTH/4 +pin.x + pin.radius
+        lower_bound_x = WIDTH/4 +pin.x - pin.radius
+        upper_bound_y = pin.y + pin.radius
+        lower_bound_y = pin.y - pin.radius
         if   lower_bound_x <= mouse_x <= upper_bound_x:
             if  lower_bound_y <= mouse_y <= upper_bound_y:
-                # print(f"mouse held pin at ({mouse_x},{mouse_y})")
                 return True
         return False
 
-    def collision(self,pen_array):
-        for pen in pen_array:
-            for rod in pen.rods:
-                # Check collision on p1
-                if self.collision_bound_check(rod.pin1) == True:
-                    self.collision_item = [pen,rod.pin1]
-                    break
-                # Check collision on p2               
-                elif self.collision_bound_check(rod.pin2) == True:
-                    self.collision_item = [pen,rod.pin2]
-                    break
-                # else:
-                #     self.collision_item = None
+    def collision_pen_check(self,pen):    
+        for rod in pen.rods:
+            # Check collision on p1 for rod
+            if self.collision_pin_check(rod.pin_1) == True:
+                print("asdfasdf")
+                self.collision_item = [pen,rod.pin_1]
+            # Check collision on p2 for rod       
+            elif self.collision_pin_check(rod.pin_2) == True:
+                self.collision_item = [pen,rod.pin_2]
 
-    def get_position(self):
-        return pygame.mouse.get_pos()
-    
     def get_displaysment(self):
         dx = self.curr_mouse_pos[0] - self.prev_mouse_pos[0]
         dy = self.curr_mouse_pos[1] - self.prev_mouse_pos[1]
@@ -67,9 +71,9 @@ class mouse:
         dy = distance[1]
         dx_speed = 0
         dy_speed = 0
-        if time.elapsed_time>0:
-            dx_speed = dx/time.elapsed_time
-            dy_speed = dy/time.elapsed_time
+        if time>0:
+            dx_speed = dx/time
+            dy_speed = dy/time
         velocity = [dx_speed, dy_speed]
         return velocity
     
@@ -82,3 +86,4 @@ class mouse:
         else:
             angle = math.pi - math.atan2(delta_x, delta_y)
         return angle
+
