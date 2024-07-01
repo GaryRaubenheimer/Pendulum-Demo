@@ -15,6 +15,7 @@ class Pendulum:
 
         rods_info = self.create_rod_info()
         self.rods = self.create_rod_array(rods_info)
+        self.isSplit = False
 
 
     def create_rod_info(self):
@@ -60,7 +61,7 @@ class Pendulum:
 
             #rod 2
             pin2_weight = 1
-            pin2_radius = 5
+            pin2_radius = 15
             pins_colour = [GREY,RED]
             pin1_friction = friction_coeficient
 
@@ -107,13 +108,15 @@ class Pendulum:
     def split(self):
         self.rods[0].type = SINGLE
         self.rods[1].type = SINGLE
+        self.isSplit = True
 
     def unsplit(self):
         self.rods[0].type = DOUBLE
         self.rods[1].type = DOUBLE
+        self.isSplit = False
 
     def update(self):
-        self.rods = update_rods(self.rods,self.type)
+        self.rods = update_rods(self.rods,self.isSplit,self.type)
 
     
 

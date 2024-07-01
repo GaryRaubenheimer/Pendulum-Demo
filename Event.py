@@ -21,10 +21,13 @@ def pygame_event_buffer(running):
             events.append(event)
         elif event.type == pygame.MOUSEBUTTONUP:
             events.append(event)
+        elif event.type == pygame.MOUSEMOTION:
+            events.append(event)
+        
 
     return running,events
 
-def handle_event_buffer(events,M,pen_array):
+def handle_event_buffer(events,M,pen_array,slider,button):
     for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:                       #Left mouse button pressed
@@ -47,6 +50,9 @@ def handle_event_buffer(events,M,pen_array):
                 pass
             elif event.button == 3:
                 M.right_held = True
+        slider.handle_event(event)
+        button.handle_event(event)
+
 
 
 def update_events(M,dt):

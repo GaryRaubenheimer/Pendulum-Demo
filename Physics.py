@@ -3,7 +3,7 @@ import math
 
 from constants import *
 
-def update_rods(rods,pen_type):
+def update_rods(rods,isSplit,pen_type):
     # print("update rods")
     if pen_type == SINGLE:
         for rod in rods:
@@ -12,28 +12,20 @@ def update_rods(rods,pen_type):
                 rod = update_angular_position_SINGLE(rod)
             rod.update()
     elif pen_type == DOUBLE:
-        rods =  update_angular_position_DOUBLE(rods)
-        rods[0].update()
-        rods[1].update()
-        pos=rods[0].pin_2.position
-        rods[1].pin_1.update_pos(pos)
-
-        # for rod in rods:
-        #     #calc_trace_points(rod)
-        #     if rod.type == SINGLE:
-        #         if rod.pin_1.friction!= 1*0.5:
-        #             rod = update_angular_position_SINGLE(rod)
-        #         rod.update_pin2_position()
-        #     elif rod.type == DOUBLE:
-        #         if rod.pin_1.friction!= 1*0.5:
-        #            rods =  update_angular_position_DOUBLE(rods)
-
-        #         rods[0].update_pin2_position()
-        #         rods[1].update_pin2_position()
-        #         pos=rods[0].pin2.position
-        #         rods[1].pin1.update_pos(pos)
+        if isSplit == False:
+            rods =  update_angular_position_DOUBLE(rods)
+            rods[0].update()
+            rods[1].update()
+            pos=rods[0].pin_2.position
+            rods[1].pin_1.update_pos(pos)
+        else:
+            for rod in rods:
+                #calc_trace_points(rod)
+                if rod.type == SINGLE:
+                    if rod.pin_1.friction!= 1*0.5:
+                        rod = update_angular_position_SINGLE(rod)
+                    rod.update()
     return rods
-
 
 def stabilise_angle(rod):
     if rod.angular_position > math.pi:
