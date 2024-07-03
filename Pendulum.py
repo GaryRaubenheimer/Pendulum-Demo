@@ -193,6 +193,7 @@ class Pin(Rod):
         self.trace_points = []
         self.trace_points_lenght = 50
         self.trace_points_colour = GREEN
+        self.trace_points_isLine = True
 
     def update_pos(self,new_pos):
         # print("update pin pos")
@@ -200,4 +201,15 @@ class Pin(Rod):
         self.x=self.pin_vector.x
         self.y=self.pin_vector.y
         self.position=[self.x,self.y]
+        if self.pin_id == 2:
+            self.calc_trace_points()
+
+    def calc_trace_points(self):
+        # calc trace points
+        if len(self.trace_points)<self.trace_points_lenght:
+            self.trace_points.append(self.position[:]) # [:]Create copy of the current position
+        else:
+            self.trace_points.pop(0)
+
+
 

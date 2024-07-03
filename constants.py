@@ -10,4 +10,6 @@ GAME_PHYSICS_SPEED =20       # update physics every 20 milliseconds
 GRAVITY = 0.3#9.81          # 9.81 m per second^2
 SPEED_LIMIT = 0.5
 
+BORDER_THICKNESS = 5
+
 

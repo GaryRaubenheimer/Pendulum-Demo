@@ -27,11 +27,11 @@ def pygame_event_buffer(running):
 
     return running,events
 
-def handle_event_buffer(events,M,pen_array,slider,button):
+def handle_event_buffer(events,M,pen_array,gui_widget_list):
     for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:                       #Left mouse button pressed
-                print("Left mouse button pressed")
+                #print("Left mouse button pressed")
                 M.left_held = True
                 for pen in pen_array:
                     M.collision_pen_check(pen)
@@ -50,12 +50,14 @@ def handle_event_buffer(events,M,pen_array,slider,button):
                 pass
             elif event.button == 3:
                 M.right_held = True
-        slider.handle_event(event)
-        button.handle_event(event)
+        #handle gui widget events
+        for widget in gui_widget_list:
+            widget.handle_event(event)
 
 
 
-def update_events(M,dt):
+
+def update_pedulum_events(M,dt):
     mo = M.get_position()
     pos = []
     pos.append(mo[0] - WIDTH/4)
@@ -67,8 +69,13 @@ def update_events(M,dt):
             held_pin = M.collision_item[1]
             if held_pin == held_pendulum.rods[0].pin_1:  #first rods pin 1
                 #print("Holding p1")
-                held_pendulum.rods[0].pin_1.update_pos(pos)
-                held_pendulum.rods[0].update()
+                if (BORDER_THICKNESS+2.5)<pos[0]<(WIDTH/4*3-BORDER_THICKNESS-2.5):
+                    if (BORDER_THICKNESS+2.5)<pos[1]<(HEIGHT-BORDER_THICKNESS-2.5):
+                        held_pendulum.rods[0].pin_1.update_pos(pos)
+                        held_pendulum.rods[0].update()
+                        if held_pendulum.type ==DOUBLE:
+                            held_pendulum.rods[1].pin_1.update_pos(held_pendulum.rods[0].pin_2.position)
+                            held_pendulum.rods[1].update()
             elif held_pin == held_pendulum.rods[0].pin_2 and held_pendulum.type == DOUBLE:   
                 #first pin p2 double
                 #print("Holding split")

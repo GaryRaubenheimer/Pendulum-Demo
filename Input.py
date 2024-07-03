@@ -53,8 +53,8 @@ class Mouse:
         for rod in pen.rods:
             # Check collision on p1 for rod
             if self.collision_pin_check(rod.pin_1) == True:
-                print("asdfasdf")
-                self.collision_item = [pen,rod.pin_1]
+                if not(pen.type == DOUBLE and rod.rod_id == 2):
+                    self.collision_item = [pen,rod.pin_1]
             # Check collision on p2 for rod       
             elif self.collision_pin_check(rod.pin_2) == True:
                 self.collision_item = [pen,rod.pin_2]
