@@ -1,7 +1,7 @@
 SINGLE = 1
 DOUBLE = 2
 
-WIDTH,HEIGHT = 1000,600
+WIDTH,HEIGHT = 1200,650
 ORIGIN_POINT = [WIDTH/2, HEIGHT/3]
 
 GAME_FRAME_SPEED = 60         # 60 updates frames per second
@@ -12,4 +12,6 @@ SPEED_LIMIT = 0.5
 
 BORDER_THICKNESS = 5
 
+pen_array = []
+pen_edit_array = []
 
