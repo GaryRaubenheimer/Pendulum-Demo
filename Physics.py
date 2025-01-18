@@ -1,5 +1,5 @@
-# Import--------------------------------------------
 import math
+
 from constants import *
 
 FRICTION_COEFFICIENT = 1

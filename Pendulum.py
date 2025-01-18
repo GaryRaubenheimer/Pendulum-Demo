@@ -1,7 +1,7 @@
-import pygame
 import math
+import colour 
 
-from colour import *
+from Pendulum_Demo import pygame
 from constants import *
 from Physics import *
 
@@ -10,21 +10,22 @@ PIN2_WEIGHT_SINGLE = 5
 PIN2_RADIUS_SINGLE = 15
 BAR_LENGTH_SINGLE = 100
 BAR_WIDTH = 3
-BAR_COLOUR = BLACK
+BAR_COLOUR = colour.BLACK
 ANGULAR_POSITION_SINGLE = math.pi / 3
 
 PIN2_WEIGHT_DOUBLE = 1
 ANGULAR_POSITION_DOUBLE = math.pi
 
 TRACE_POINTS_LENGTH = 50
-TRACE_POINTS_COLOR = GREEN
 
 class Pendulum:   
-    def __init__(self, type, origin_pos):
+    def __init__(self, type, origin_pos, trace_colour,isRainbow = False):
         self.type = type
         self.origin_pos = origin_pos
+        self.trace_points_colour = trace_colour
+        self.isRainbow = isRainbow
         rods_info = self.create_rod_info()
-        self.rods = self.create_rod_array(rods_info)
+        self.rods = self.create_rod_array(rods_info,self.trace_points_colour)
         self.isSplit = False
         self.isSelected = False
 
@@ -48,12 +49,12 @@ class Pendulum:
         return rods_info
 
     def _create_single_rod_info(self, friction_coefficient):
-        pins_info = [PIN2_WEIGHT_SINGLE, PIN2_RADIUS_SINGLE, [GREY, RED], friction_coefficient, self.origin_pos]
+        pins_info = [PIN2_WEIGHT_SINGLE, PIN2_RADIUS_SINGLE, [colour.GREY, colour.RED], friction_coefficient, self.origin_pos]
         bar_info = [0, BAR_LENGTH_SINGLE, BAR_WIDTH, BAR_COLOUR]
         return [pins_info, bar_info, ANGULAR_POSITION_SINGLE]
 
     def _create_double_rod_info(self, friction_coefficient, first_rod_info):
-        pins_info = [PIN2_WEIGHT_DOUBLE, PIN2_RADIUS_SINGLE, [GREY, RED], friction_coefficient, self._calculate_pin_position(first_rod_info)]
+        pins_info = [PIN2_WEIGHT_DOUBLE, PIN2_RADIUS_SINGLE, [colour.GREY, colour.RED], friction_coefficient, self._calculate_pin_position(first_rod_info)]
         bar_info = [0, BAR_LENGTH_SINGLE, BAR_WIDTH, BAR_COLOUR]
         return [pins_info, bar_info, ANGULAR_POSITION_DOUBLE]
 
@@ -63,10 +64,10 @@ class Pendulum:
         pin_position[1] = rod_info[0][4][1] + rod_info[1][1] * math.cos(rod_info[2])
         return pin_position
 
-    def create_rod_array(self, rods_info):
+    def create_rod_array(self, rods_info,trace_points_colour):
         rods = []
         for rod_id, rod_info in enumerate(rods_info, start=1):
-            rods.append(Rod(rod_id, self.type, *rod_info))
+            rods.append(Rod(rod_id, self.isRainbow,self.type,trace_points_colour, *rod_info))
         return rods
 
     def split(self):
@@ -85,13 +86,13 @@ class Pendulum:
 #--
 
 class Rod:
-    def __init__(self, rod_id, type, pins_info, bar_info, angular_position):
+    def __init__(self, rod_id, isRainbow,type, trace_points_colour, pins_info, bar_info, angular_position):
         self.angular_position = angular_position
         self.angular_velocity = 0
         self.rod_id = rod_id
         self.type = type
-        self.pin_1 = Pin(1, pins_info[4], 0, 5, pins_info[2][0], pins_info[3])
-        self.pin_2 = Pin(2, self._create_pin2_position(pins_info[4], bar_info[1]), pins_info[0], pins_info[1], pins_info[2][1], 0)
+        self.pin_1 = Pin(1,isRainbow, pins_info[4], 0, 5, pins_info[2][0],trace_points_colour, pins_info[3])
+        self.pin_2 = Pin(2, isRainbow,self._create_pin2_position(pins_info[4], bar_info[1]), pins_info[0], pins_info[1], pins_info[2][1],trace_points_colour, pin_friction=0)
         self.bar = Bar(*bar_info)
 
     def get_info(self):
@@ -130,7 +131,7 @@ class Bar:
 #--
 
 class Pin:
-    def __init__(self, pin_id, position, weight, radius, colour, pin_friction=None):
+    def __init__(self, pin_id, isRainbow ,position, weight, radius, colour, trace_pcolour=None, pin_friction=None):
         self.pin_vector = pygame.math.Vector2(position)
         self.x = self.pin_vector.x
         self.y = self.pin_vector.y
@@ -142,9 +143,10 @@ class Pin:
         self.friction = pin_friction 
         self.trace_points = []
         self.trace_points_length = TRACE_POINTS_LENGTH
-        self.trace_points_colour = TRACE_POINTS_COLOR
+        self.trace_points_colour = trace_pcolour
         self.trace_points_isLine = True
         self.trace_points_isOn = True
+        self.isRainbow = isRainbow
 
     def update_pos(self, new_pos):
         self.pin_vector.update(new_pos[0], new_pos[1])
@@ -153,6 +155,9 @@ class Pin:
         self.position = [self.x, self.y]
         if self.pin_id == 2:
             self.calc_trace_points()
+            if self.isRainbow:
+                newColour = colour.changeRAINBOW(self.trace_points_colour)
+                self.trace_points_colour = newColour
 
     def calc_trace_points(self):
         if len(self.trace_points) < self.trace_points_length:

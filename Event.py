@@ -1,6 +1,6 @@
-import pygame
 import math
 
+from Pendulum_Demo import pygame
 from constants import *
 from Gui import *
 
@@ -17,7 +17,7 @@ def pygame_event_buffer(running):
 
 #---
 
-def handle_event_buffer(events, M, pen_array,ui):
+def handle_event_buffer(events, M,ui):
     for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
             handle_mouse_button_down(event, M, pen_array)
@@ -55,7 +55,7 @@ def handle_mouse_button_up(event, M,ui):
     elif event.button == 3:
         M.right_held = False
         if M.collision_item:
-            ui.initialize_gui()
+            ui.initialize_editGui()
             ui.change_guiEdit_widget_info(M.collision_item[0])
             M.collision_item = None
         else:

@@ -1,34 +1,33 @@
-from constants import *
+import constants 
+
 from Widgets import *
 
 slot_height = 40
 x_offset = 20
 y_offset = 5
 
-
 class Gui:   
     def __init__(self):
-        self.display = pygame.Surface((WIDTH/4, HEIGHT))
         self.gui_widget_list = []
 
+#---
+class gui_Edit(Gui):
+    def __init__(self):
+        super().__init__()
+        self.display = pygame.Surface((WIDTH/4, HEIGHT))
+        self.selected_pendulum = None
+        self.selected_rod = None
+
     def draw(self):
-        self.display.fill((0,150,150))
+        self.display.fill(LIGHT_CYAN)
         if len(self.gui_widget_list) !=0:
             for category, widgets in self.gui_widget_list.items():
                 for name, widget in widgets.items():
                     widget.draw(self.display)
 
-#---
-    
-class gui_Edit(Gui):
-    def __init__(self):
-        super().__init__()
-        self.selected_pendulum = None
-        self.selected_rod = None
+    #-- create edit gui widgets
 
-    #--
-
-    def initialize_gui(self):
+    def initialize_editGui(self):
         # UI initialization
         self.gui_widget_list = self.create_pen_edit_widget_list()
         return self.gui_widget_list
@@ -98,7 +97,7 @@ class gui_Edit(Gui):
         }
         return slider_dict
     
-    #--
+    #-- Call function for edit gui
 
     def get_pen_info(self,pen):
         rods_info = []
@@ -186,7 +185,7 @@ class gui_Edit(Gui):
 
 
     #--
-
+    # toggle and change which rod of selected pendulem is selected
     def change_rod_selection(self,rod_select_Button):
         if rod_select_Button.text == "ROD 1":
             if rod_select_Button.is_active == False:
@@ -242,6 +241,93 @@ class gui_Edit(Gui):
 
     #---
 
+
+class gui_startMenu(Gui):
+    def __init__(self):
+        super().__init__()
+        global simulationState
+        self.display = pygame.Surface((WIDTH, HEIGHT))
+        self.initialize_startMenuGui()
+
+    def draw(self):
+        self.display.fill(DARK_YELLOW)
+        if len(self.gui_widget_list) !=0:
+            for category, widgets in self.gui_widget_list.items():
+                for name, widget in widgets.items():
+                    widget.draw(self.display)
+
+    def initialize_startMenuGui(self):
+        # Menu UI initialization
+        self.gui_widget_list = self.create_startMenu_widget_list()
+        return self.gui_widget_list
+
+    def kill_startMenu_widget_list(self):
+        self.gui_widget_list =[]
+    
+    def create_startMenu_widget_list(self):
+        gui_widget_list = {
+        "labels"         :self.create_guiEdit_lable_dict(slot_height),
+        "buttons"        :self.create_guiEdit_button_dict(slot_height)
+        }
+        return gui_widget_list
+    
+    def create_guiEdit_lable_dict(self,slot_height):
+        #(x, y, text, font_size=20, color=BLACK)
+        lable_dict = {
+        "label_Title_PendulumDemo": Label(WIDTH/2, slot_height*4,"Pendulum Demo", 80)
+        }
+        return lable_dict
+
+    def create_guiEdit_button_dict(self,slot_height):
+        #(x, y, width, height, color, hover_color, text='', font_size=20, text_color=(255, 255, 255), action=None)
+        button_dict = {
+        "start_button" : Button(WIDTH/2, slot_height*8, 150, 40, LIGHT_BLUE, BLUE, "Start",action=self.select_start),
+        "about_button" : Button(WIDTH/2, slot_height*10, 150, 40, LIGHT_BLUE, BLUE, "About",action=self.select_about),
+        "quit_button" : Button(WIDTH/2, slot_height*12, 150, 40, LIGHT_BLUE, BLUE, "Quit", action=self.select_quit)
+        }
+        return button_dict
+    
+    def select_start(self):
+        constants.changeState("SIMULATION")
+        #print("--" + simulationState)
+
+    def select_about(self):
+        constants.changeState("ABOUTMENU")
+
+    def select_quit(self):
+        constants.changeState("QUIT")
+    
+'''
+class gui_aboutMenu(Gui):
+    def __init__(self):
+        super().__init__()
+        self.display = pygame.Surface((WIDTH, HEIGHT))
+
+    def draw(self):
+        self.display.fill(LIGHT_CYAN)
+        if len(self.gui_widget_list) !=0:
+            for category, widgets in self.gui_widget_list.items():
+                for name, widget in widgets.items():
+                    widget.draw(self.display)
+
+    def kill_startMenu_widget_list(self):
+        self.gui_widget_list =[]
+    
+    def create_startMenu_widget_list(self):
+        gui_widget_list = {
+        "labels"         :self.create_guiEdit_lable_dict(x_offset,y_offset,slot_height),
+        "buttons"        :self.create_guiEdit_button_dict(x_offset,y_offset,slot_height)
+        }
+        return gui_widget_list
+    
+    def create_guiEdit_lable_dict(self,x_offset,y_offset,slot_height):
+        #(x, y, text, font_size=20, color=BLACK)
+        pass
+
+    def create_guiEdit_button_dict(self,x_offset,y_offset,slot_height):
+        #(x, y, width, height, color, hover_color, text='', font_size=20, text_color=(255, 255, 255), action=None)
+        pass
+    '''
 
 #---
 

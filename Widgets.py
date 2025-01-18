@@ -1,5 +1,7 @@
 from Pendulum_Demo import pygame
+
 from colour import *
+from constants import *
 
 class Label:
     def __init__(self, x, y, text, font_size=25, color=BLACK):
@@ -59,6 +61,7 @@ class RadioButton:
     def rect(self):
         # Create a rect for collision detection
         return pygame.Rect(self.x - self.radius, self.y - self.radius, self.radius * 2, self.radius * 2)
+
 
 class ToggleButton:
     def __init__(self, x, y, width, height, text, toggle_text = None, is_linked = False,is_active=True, action=None):

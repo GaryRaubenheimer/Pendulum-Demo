@@ -12,6 +12,14 @@ SPEED_LIMIT = 0.5
 
 BORDER_THICKNESS = 5
 
+simulationState = "asdf"
+    # "STARTMENU"   "ABOUTMENU"   "SIMULATION"  "QUIT"
+
+def changeState(newState):
+    global simulationState
+    simulationState = newState
+
+
 pen_array = []
 pen_edit_array = []
 
