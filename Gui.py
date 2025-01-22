@@ -6,17 +6,46 @@ slot_height = 40
 x_offset = 20
 y_offset = 5
 
+def changeGui(sidebarState):
+    if sidebarState == "INFO":
+        newUi = gui_Sidebar()
+        #newUi.change_sidebar_state(sidebarState)
+    elif sidebarState == "CREATE":
+        newUi = gui_createPendulum()
+        #newUi.change_sidebar_state(sidebarState)
+    elif sidebarState == "EDIT":
+        newUi = gui_editPendulum()
+        #newUi.change_sidebar_state(sidebarState)
+    elif sidebarState == "MENU":
+        # change ui then set state beacuse the initial new ui state is startup
+        newUi =  gui_startMenu()
+        constants.changeState("STARTMENU")
+    return newUi
+
+
 class Gui:   
     def __init__(self):
+        # constructor
         self.gui_widget_list = []
+        self.state = None
+        self.inCreate = False
+
+    def __del__(self):
+        # deconstructor
+        self.kill_gui_widget_list()
+
+    def kill_gui_widget_list(self):
+        self.gui_widget_list =[]
 
 #---
-class gui_Edit(Gui):
+
+class gui_Sidebar(Gui):
     def __init__(self):
         super().__init__()
         self.display = pygame.Surface((WIDTH/4, HEIGHT))
-        self.selected_pendulum = None
-        self.selected_rod = None
+        self.state = "SIDEBAR"
+        self.sidebarState = "INFO"
+        self.initialize_Sidebar()
 
     def draw(self):
         self.display.fill(LIGHT_CYAN)
@@ -25,15 +54,123 @@ class gui_Edit(Gui):
                 for name, widget in widgets.items():
                     widget.draw(self.display)
 
-    #-- create edit gui widgets
+    def change_sidebar_state(self,newState):
+        if newState == "INFO":
+            self.sidebarState = "INFO"
+            self.initialize_Sidebar()
+
+    def initialize_Sidebar(self):
+        # Menu UI initialization
+        self.gui_widget_list = self.create_Sidebar_widget_list()
+        return self.gui_widget_list
+    
+    def create_Sidebar_widget_list(self):
+        gui_widget_list = {
+        "labels"         :self.create_Sidebar_lable_dict(x_offset,y_offset,slot_height),
+        "buttons"        :self.create_Sidebar_button_dict(x_offset,y_offset,slot_height),
+        "sliders"        :self.create_Sidebar_slider_dict(x_offset,y_offset,slot_height)
+        }
+        return gui_widget_list
+    
+    def create_Sidebar_lable_dict(self,x_offset,y_offset,slot_height):
+        #(x, y, text, font_size=20, color=BLACK)
+        lable_dict = {
+        "label_Sidebar"  : Label(x_offset, y_offset + slot_height*1, "Side Bar :")
+        }
+        return lable_dict
+
+    def create_Sidebar_button_dict(self,x_offset,y_offset,slot_height):
+        #(x, y, width, height, color, hover_color, text='', font_size=20, text_color=(255, 255, 255), action=None)
+        button_dict = {
+        "create_button" : Button(x_offset, slot_height*4, 150, 40, BLUE, RED, "Create Pendulum", action = self.change_sidebarStateToCreate),
+        "back_button" : Button(x_offset, slot_height*15, 150, 40, BLUE, RED, "Back to Menu",action = self.change_GuiToMenu)
+        }
+        return button_dict
+    
+    def create_Sidebar_slider_dict(self,x_offset,y_offset,slot_height):
+        #(self, x, y, width, height, min_value=0.0, real_value=0.5, max_value=1.0, color=BLUE, action=None)
+        slider_dict = {
+        #"slider_pin_friction" : Slider(x_offset+5, slot_height*6,  250, 10, 0, 0, 1, action=self.change_friction)
+        "slider_simulated_frames" : Slider(50, HEIGHT // 2, WIDTH/4-100, 10, 1, constants.fps_factor, 60, RED,action=self.change_fps),
+        "slider_si,ulation_speed" : Slider(50, (HEIGHT // 3)*2, WIDTH/4-100, 10, min_value=1, max_value=20, real_value=constants.speed_factor, color=GREEN, action=self.change_speed)
+        }
+        return slider_dict
+    
+    def change_speed(self,slider_speed):
+        speed = slider_speed.get_real_value()
+        constants.speed_factor = speed
+
+    def change_fps(self,slider_fps):
+        constants.fps_factor = slider_fps.get_real_value()
+
+    def change_sidebarStateToCreate(self):
+        self.sidebarState = "CREATE"
+        self.inCreate = True
+        self.kill_gui_widget_list()
+        #self = changeGui("CREATE")
+
+    def change_GuiToMenu(self):
+        self.state = "MENU"
+        self.kill_gui_widget_list()
+        constants.changeState("STARTMENU")
+        #self = changeGui("MENU")
+
+class gui_createPendulum(gui_Sidebar):
+    def __init__(self):
+        super().__init__()
+        self.sidebarState = "CREATE"
+        self.initialize_createPendulum()
+
+    def initialize_createPendulum(self):
+        # Menu UI initialization
+        self.gui_widget_list = self.create_createPendulum_widget_list()
+        return self.gui_widget_list
+    
+    def change_sidebar_state(self,newState):
+        if newState == "CREATE":
+            self.sidebarState = "CREATE"
+            self.toCreate = True
+            self.initialize_createPendulum()
+    
+    def create_createPendulum_widget_list(self):
+        gui_widget_list = {
+        "labels"    :self.create_createPendulum_lable_dict(x_offset,y_offset,slot_height),
+        "buttons"   :self.create_createPendulum_button_dict(x_offset,y_offset,slot_height)
+        }
+        return gui_widget_list
+    
+    def create_createPendulum_lable_dict(self,x_offset,y_offset,slot_height):
+        #(x, y, text, font_size=20, color=BLACK)
+        lable_dict = {
+        "label_createPendulum"  : Label(x_offset, y_offset + slot_height*1, "Create Pendulum :")
+        }
+        return lable_dict
+
+    def create_createPendulum_button_dict(self,x_offset,y_offset,slot_height):
+        #(x, y, width, height, color, hover_color, text='', font_size=20, text_color=(255, 255, 255), action=None)
+        button_dict = {
+        "back_button" : Button(x_offset, slot_height*15, 150, 40, BLUE, RED, "Back"),
+        "confirm_button" : Button(x_offset, slot_height*13, 150, 40, BLUE, RED, "Confirm")
+        }
+        return button_dict
+
+class gui_editPendulum(gui_Sidebar):
+    def __init__(self):
+        super().__init__()
+        self.sidebarState = "EDIT"
+        self.selected_pendulum = None
+        self.selected_rod = None
+        self.initialize_editGui()
 
     def initialize_editGui(self):
         # UI initialization
         self.gui_widget_list = self.create_pen_edit_widget_list()
         return self.gui_widget_list
     
-    def kill_pen_edit_widget_list(self):
-        self.gui_widget_list =[]
+    def change_sidebar_state_(self,newState):
+        if newState == "EDIT":
+            self.sidebarState = "EDIT"
+            self.initialize_editGui()
     
     def create_pen_edit_widget_list(self):
         gui_widget_list = {
@@ -183,7 +320,6 @@ class gui_Edit(Gui):
 
         return self.gui_widget_list
 
-
     #--
     # toggle and change which rod of selected pendulem is selected
     def change_rod_selection(self,rod_select_Button):
@@ -245,7 +381,7 @@ class gui_Edit(Gui):
 class gui_startMenu(Gui):
     def __init__(self):
         super().__init__()
-        global simulationState
+        self.state = "MENU"
         self.display = pygame.Surface((WIDTH, HEIGHT))
         self.initialize_startMenuGui()
 
@@ -260,9 +396,6 @@ class gui_startMenu(Gui):
         # Menu UI initialization
         self.gui_widget_list = self.create_startMenu_widget_list()
         return self.gui_widget_list
-
-    def kill_startMenu_widget_list(self):
-        self.gui_widget_list =[]
     
     def create_startMenu_widget_list(self):
         gui_widget_list = {
@@ -289,7 +422,6 @@ class gui_startMenu(Gui):
     
     def select_start(self):
         constants.changeState("SIMULATION")
-        #print("--" + simulationState)
 
     def select_about(self):
         constants.changeState("ABOUTMENU")
@@ -309,9 +441,6 @@ class gui_aboutMenu(Gui):
             for category, widgets in self.gui_widget_list.items():
                 for name, widget in widgets.items():
                     widget.draw(self.display)
-
-    def kill_startMenu_widget_list(self):
-        self.gui_widget_list =[]
     
     def create_startMenu_widget_list(self):
         gui_widget_list = {
@@ -328,27 +457,3 @@ class gui_aboutMenu(Gui):
         #(x, y, width, height, color, hover_color, text='', font_size=20, text_color=(255, 255, 255), action=None)
         pass
     '''
-
-#---
-
-
-
-
-
-
-
-    # slider = Slider(50, HEIGHT // 2, WIDTH/4-100, 10, 0.5, 5, 0.5, RED)
-    # slider_speed = Slider(50, (HEIGHT // 3)*2, WIDTH/4-100, 10, 0.2, 5, 0.208333333, GREEN, action=change_speed)
-    # slider_fps = Slider(50, (HEIGHT // 4)*3, WIDTH/4-100, 10, 1, GAME_FRAME_SPEED, 1.016949, DARK_YELLOW, action=change_fps)
-    # button = Button(50, HEIGHT // 9, 100, 50, BLUE, RED, "Button 1", action=button_click)
-    # radio_button = RadioButton(50, HEIGHT // 4, 20, LIGHT_GREY, BLACK, DARK_GREY, radio_button_action)
-
-    # gui_widget_list.extend([slider, slider_speed, slider_fps, button, radio_button])
-
-# def change_speed(slider_speed):
-#     global speed_factor
-#     speed_factor = slider_speed.get_real_value()
-
-# def change_fps(slider_fps):
-#     global fps_factor
-#     fps_factor = slider_fps.get_real_value()
