@@ -2,7 +2,7 @@ SINGLE = 1
 DOUBLE = 2
 
 WIDTH,HEIGHT = 1200,650
-ORIGIN_POINT = [WIDTH/2, HEIGHT/3]
+ORIGIN_POINT = [WIDTH/2, HEIGHT/2]
 
 GAME_FRAME_SPEED = 60         # 60 updates frames per second
 GAME_PHYSICS_SPEED =20       # update physics every 20 milliseconds

@@ -1,6 +1,9 @@
 import constants 
+import random
+import colour 
 
 from Widgets import *
+from Pendulum import *
 
 slot_height = 40
 x_offset = 20
@@ -135,24 +138,93 @@ class gui_createPendulum(gui_Sidebar):
     def create_createPendulum_widget_list(self):
         gui_widget_list = {
         "labels"    :self.create_createPendulum_lable_dict(x_offset,y_offset,slot_height),
-        "buttons"   :self.create_createPendulum_button_dict(x_offset,y_offset,slot_height)
+        "buttons"   :self.create_createPendulum_button_dict(x_offset,y_offset,slot_height),
+        #"sliders"   :self.create_createPendulum_slider_dict(x_offset,y_offset,slot_height)
         }
         return gui_widget_list
     
     def create_createPendulum_lable_dict(self,x_offset,y_offset,slot_height):
         #(x, y, text, font_size=20, color=BLACK)
         lable_dict = {
-        "label_createPendulum"  : Label(x_offset, y_offset + slot_height*1, "Create Pendulum :")
+        "label_createPendulum"  : Label(x_offset, y_offset + slot_height*1, "Create Pendulum :"),
+        "label_quickAddPendulum"  : Label(x_offset, y_offset + slot_height*5, "Quick add Pendulum:")
         }
         return lable_dict
 
     def create_createPendulum_button_dict(self,x_offset,y_offset,slot_height):
         #(x, y, width, height, color, hover_color, text='', font_size=20, text_color=(255, 255, 255), action=None)
         button_dict = {
-        "back_button" : Button(x_offset, slot_height*15, 150, 40, BLUE, RED, "Back"),
-        "confirm_button" : Button(x_offset, slot_height*13, 150, 40, BLUE, RED, "Confirm")
+        "SinglePendulum_button" : Button(x_offset, slot_height*6, 150, 40, BLUE, LIGHT_BLUE, "Single Pendulum",action =self.create_newSinglePendulum),
+        "DoublePendulum_button" : Button(x_offset, slot_height*8, 150, 40, BLUE, LIGHT_BLUE, "Double Pendulum",action =self.create_newDoublePendulum),
+        "confirm_button" : Button(x_offset, slot_height*13, 150, 40, BLUE, DARK_GREEN, "Confirm",action = self.create_newCustomPendulum),
+        "back_button" : Button(x_offset, slot_height*15, 150, 40, BLUE, RED, "Back",action =self.change_sidebarStateToInfo)
         }
         return button_dict
+    
+    def create_createPendulum_slider_dict(self,x_offset,y_offset,slot_height):
+        #(self, x, y, width, height, min_value=0.0, real_value=0.5, max_value=1.0, color=BLUE, action=None)
+        slider_dict = {
+        "slider_RGB_RedTrace"       : Slider(x_offset+5, slot_height*10,  250, 10, 0, 0, 255, action=self.setRed),
+        "slider_RGB_BlueTrace"      : Slider(x_offset+5, slot_height*12,  250, 10, 0, 0, 255, action=self.setBlue),
+        "slider_RGB_GreenTrace"     : Slider(x_offset+5, slot_height*14,  250, 10, 0, 0, 255, action=self.setGreen),
+        "slider_rod_length"         : Slider(x_offset+5, slot_height*8,  250, 10, 25, 25, 250, action=self.change_length),
+        "slider_bob_weight"         : Slider(x_offset+5, slot_height*10,  250, 10, 1, 1, 50, action=self.change_weight),
+        "slider_bob_radius"         : Slider(x_offset+5, slot_height*12,  250, 10, 5, 5, 35, action=self.change_radius)
+        }
+        return slider_dict
+    
+    def setRed(self,redValue):
+        pass
+
+    def setBlue(self,blueValue):
+        pass
+
+    def setGreen(self,greenValue):
+        pass
+
+    def change_length(self,silder_lenght):
+        pass
+
+    def change_friction(self,silder_friction):
+        pass
+
+    def change_weight(self,silder_weight):
+        pass
+
+    def change_radius(self,silder_radius):
+        pass
+    
+    def change_sidebarStateToInfo(self):
+        self.sidebarState = "INFO"
+        self.inCreate = False
+        self.kill_gui_widget_list()
+    
+    def create_newCustomPendulum(self):
+        pass
+
+    def create_newSinglePendulum(self):
+        #random.randint(0,255)
+        #(self, type, origin_pos, trace_colour,isRainbow = False)
+        randomColour = random.randint(0,1)
+        w = WIDTH/4*3/2
+        h = HEIGHT/2
+        random_xPosition = random.randint(int(w-(w/1.2)),int(w+(w/1.2)))
+        random_yPosition = random.randint(int(h-(h/1.2))-50,int(h+(h/1.2))-50)
+        if randomColour:
+            constants.pen_array.extend([Pendulum(SINGLE, [random_xPosition, random_yPosition],colour.get_RANDOM_COLOUR(),isRainbow=False)])
+        else:
+            constants.pen_array.extend([Pendulum(SINGLE, [random_xPosition, random_yPosition],RAINBOW,isRainbow=True)])
+
+    def create_newDoublePendulum(self):
+        randomColour = random.randint(0,1)
+        w = WIDTH/4*3/2
+        h = HEIGHT/2
+        random_xPosition = random.randint(int(w-(w/1.2)),int(w+(w/1.2)))
+        random_yPosition = random.randint(int(h-(h/1.5))-50,int(h+(h/1.5))-50)
+        if randomColour:
+            constants.pen_array.extend([Pendulum(DOUBLE, [random_xPosition, random_yPosition],colour.get_RANDOM_COLOUR(),isRainbow=False)])
+        else:
+            constants.pen_array.extend([Pendulum(DOUBLE, [random_xPosition, random_yPosition],RAINBOW,isRainbow=True)])
 
 class gui_editPendulum(gui_Sidebar):
     def __init__(self):
@@ -225,12 +297,12 @@ class gui_editPendulum(gui_Sidebar):
         return button_dict
 
     def create_guiEdit_slider_dict(self,x_offset,y_offset,slot_height):
-        #(x, y, width, height, min_value=0.0, max_value=1.0, initial_value=0.5, color=BLUE, action=None)
+        #(self, x, y, width, height, min_value=0.0, real_value=0.5, max_value=1.0, color=BLUE, action=None)
         slider_dict = {
-        "slider_pin_friction" : Slider(x_offset+5, slot_height*6,  250, 10, 0, 0, 1, action=self.change_friction),
-        "slider_rod_length"   : Slider(x_offset+5, slot_height*8,  250, 10, 25, 25, 250, action=self.change_length),
-        "slider_bob_weight"   : Slider(x_offset+5, slot_height*10,  250, 10, 1, 1, 50, action=self.change_weight),
-        "slider_bob_radius"   : Slider(x_offset+5, slot_height*12,  250, 10, 5, 5, 35, action=self.change_radius)
+        "slider_pin_friction" : Slider(x_offset+5, slot_height*6,  250, 10, 0, self.selected_rod.pin_1.friction, 1, action=self.change_friction),
+        "slider_rod_length"   : Slider(x_offset+5, slot_height*8,  250, 10, 25, self.selected_rod.bar.length, 250, action=self.change_length),
+        "slider_bob_weight"   : Slider(x_offset+5, slot_height*10,  250, 10, 1, self.selected_rod.pin_2.weight, 50, action=self.change_weight),
+        "slider_bob_radius"   : Slider(x_offset+5, slot_height*12,  250, 10, 5, self.selected_rod.pin_2.radius, 35, action=self.change_radius)
         }
         return slider_dict
     

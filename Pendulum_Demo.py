@@ -66,6 +66,7 @@ def main():
         running, event_array = pygame_event_buffer(running) 
 
         # check ui state and initiate sidebar info
+        # THIS IS BAD but it works
         if (constants.simulationState == "SIMULATION" and constants.prev_simulationState == "STARTMENU" and initiate == True):
             if ui.state != "SIDEBAR":
                 ui = Gui.changeGui("INFO")
