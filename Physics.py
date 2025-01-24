@@ -15,12 +15,41 @@ def update_rods(rods, isSplit, pen_type):
             rod.update()
     elif pen_type == DOUBLE:
         if not isSplit:
-            rods = update_angular_position_DOUBLE(rods)
-            rods[0].update()
-            rods[1].update()
-            pos = rods[0].pin_2.position
-            rods[1].pin_1.update_pos(pos)
+            if rods[0].pin_1.friction != FRICTION_COEFFICIENT and rods[1].pin_1.friction != FRICTION_COEFFICIENT:
+                # double and not at full friction
+                rods = update_angular_position_DOUBLE(rods)
+                rods[0].update()
+                rods[1].update()
+                pos = rods[0].pin_2.position
+                rods[1].pin_1.update_pos(pos)
+            else:
+                # double and both pins at full friction
+                if rods[0].pin_1.friction == FRICTION_COEFFICIENT and rods[1].pin_1.friction == FRICTION_COEFFICIENT:
+                    rods[0].update()
+                    rods[1].update()
+                    pos = rods[0].pin_2.position
+                    rods[1].pin_1.update_pos(pos)
+                # double and first pin at full friction
+                elif rods[0].pin_1.friction == FRICTION_COEFFICIENT:
+                    rods[1] = update_angular_position_SINGLE(rods[1])
+                    rods[0].update()
+                    rods[1].update()
+                    pos = rods[0].pin_2.position
+                    rods[1].pin_1.update_pos(pos)
+                # double and second pin at full friction
+                elif rods[1].pin_1.friction == FRICTION_COEFFICIENT:
+                    #add second rod weight
+                    temp_rodweight = rods[0].pin_2.weight
+                    rods[0].pin_2.change_weight(rods[0].pin_2.weight + rods[1].pin_2.weight)
+                    rods[0] = update_angular_position_SINGLE(rods[0])
+                    rods[0].update()
+                    rods[1].update()
+                    rods[0].pin_2.change_weight(temp_rodweight)
+                    pos = rods[0].pin_2.position
+                    rods[1].pin_1.update_pos(pos)
+
         else:
+            # if mouse is holding a part of a double pendulum
             for rod in rods:
                 if rod.type == SINGLE:
                     if rod.pin_1.friction != FRICTION_COEFFICIENT:

@@ -19,8 +19,7 @@ PURPLE = (255,0,255)
 RAINBOW = [255, 0, 0]  # Start with red
 RAINBOW_step_direction = 0  # 0: Red -> Yellow, 1: Yellow -> Green, 2: Green -> Cyan, etc.
 
-def changeRAINBOW(RAINBOW):
-    global RAINBOW_step_direction
+def changeRAINBOW(RAINBOW,RAINBOW_step_direction):
     step_value = 5  # Adjust the step size for smoothness or speed
 
     if RAINBOW_step_direction == 0:  # Red -> Yellow
@@ -56,7 +55,7 @@ def changeRAINBOW(RAINBOW):
 
     # Ensure values stay in the valid range
     RAINBOW = [max(0, min(255, x)) for x in RAINBOW]
-    return RAINBOW
+    return RAINBOW,RAINBOW_step_direction
 
 
 def get_RANDOM_COLOUR():

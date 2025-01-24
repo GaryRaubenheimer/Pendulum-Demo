@@ -63,7 +63,6 @@ def handle_mouse_button_up(event, M,ui):
         M.left_held = False
     elif event.button == 3:
         M.right_held = False
-        # BUG--things brake if i hold down both mouse buttons
         if M.collision_item and M.left_held == False:
             ui = Gui.changeGui("EDIT")
             #ui.change_sidebar_state("EDIT")
@@ -77,6 +76,7 @@ def handle_mouse_button_up(event, M,ui):
     elif event.button == 2:         #middle mouse button and remove pendulum
         if M.collision_item and M.left_held == False and M.right_held == False:
             constants.pen_array.remove(M.collision_item[0])
+            M.collision_item = None
     return ui
 
 #---

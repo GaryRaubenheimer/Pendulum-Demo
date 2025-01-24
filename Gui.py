@@ -32,6 +32,7 @@ class Gui:
         self.gui_widget_list = []
         self.state = None
         self.inCreate = False
+        self.was_inCreate = False
 
     def __del__(self):
         # deconstructor
@@ -156,7 +157,7 @@ class gui_createPendulum(gui_Sidebar):
         button_dict = {
         "SinglePendulum_button" : Button(x_offset, slot_height*6, 150, 40, BLUE, LIGHT_BLUE, "Single Pendulum",action =self.create_newSinglePendulum),
         "DoublePendulum_button" : Button(x_offset, slot_height*8, 150, 40, BLUE, LIGHT_BLUE, "Double Pendulum",action =self.create_newDoublePendulum),
-        "confirm_button" : Button(x_offset, slot_height*13, 150, 40, BLUE, DARK_GREEN, "Confirm",action = self.create_newCustomPendulum),
+        #"confirm_button" : Button(x_offset, slot_height*13, 150, 40, BLUE, DARK_GREEN, "Confirm",action = self.create_newCustomPendulum),
         "back_button" : Button(x_offset, slot_height*15, 150, 40, BLUE, RED, "Back",action =self.change_sidebarStateToInfo)
         }
         return button_dict
@@ -197,6 +198,7 @@ class gui_createPendulum(gui_Sidebar):
     def change_sidebarStateToInfo(self):
         self.sidebarState = "INFO"
         self.inCreate = False
+        self.was_inCreate = True
         self.kill_gui_widget_list()
     
     def create_newCustomPendulum(self):
@@ -208,6 +210,7 @@ class gui_createPendulum(gui_Sidebar):
         randomColour = random.randint(0,1)
         w = WIDTH/4*3/2
         h = HEIGHT/2
+        #RAINBOW = [255, 0, 0]
         random_xPosition = random.randint(int(w-(w/1.2)),int(w+(w/1.2)))
         random_yPosition = random.randint(int(h-(h/1.2))-50,int(h+(h/1.2))-50)
         if randomColour:
@@ -219,6 +222,7 @@ class gui_createPendulum(gui_Sidebar):
         randomColour = random.randint(0,1)
         w = WIDTH/4*3/2
         h = HEIGHT/2
+        #RAINBOW = [255, 0, 0]
         random_xPosition = random.randint(int(w-(w/1.2)),int(w+(w/1.2)))
         random_yPosition = random.randint(int(h-(h/1.5))-50,int(h+(h/1.5))-50)
         if randomColour:
@@ -299,10 +303,10 @@ class gui_editPendulum(gui_Sidebar):
     def create_guiEdit_slider_dict(self,x_offset,y_offset,slot_height):
         #(self, x, y, width, height, min_value=0.0, real_value=0.5, max_value=1.0, color=BLUE, action=None)
         slider_dict = {
-        "slider_pin_friction" : Slider(x_offset+5, slot_height*6,  250, 10, 0, self.selected_rod.pin_1.friction, 1, action=self.change_friction),
-        "slider_rod_length"   : Slider(x_offset+5, slot_height*8,  250, 10, 25, self.selected_rod.bar.length, 250, action=self.change_length),
-        "slider_bob_weight"   : Slider(x_offset+5, slot_height*10,  250, 10, 1, self.selected_rod.pin_2.weight, 50, action=self.change_weight),
-        "slider_bob_radius"   : Slider(x_offset+5, slot_height*12,  250, 10, 5, self.selected_rod.pin_2.radius, 35, action=self.change_radius)
+        "slider_pin_friction" : Slider(x_offset+5, slot_height*6,  250, 10, 0, 0, 1, action=self.change_friction),
+        "slider_rod_length"   : Slider(x_offset+5, slot_height*8,  250, 10, 25, 25, 250, action=self.change_length),
+        "slider_bob_weight"   : Slider(x_offset+5, slot_height*10,  250, 10, 1, 1, 50, action=self.change_weight),
+        "slider_bob_radius"   : Slider(x_offset+5, slot_height*12,  250, 10, 5, 5, 35, action=self.change_radius)
         }
         return slider_dict
     

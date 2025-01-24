@@ -91,8 +91,8 @@ class Rod:
         self.angular_velocity = 0
         self.rod_id = rod_id
         self.type = type
-        self.pin_1 = Pin(1,isRainbow, pins_info[4], 0, 5, pins_info[2][0],trace_points_colour, pins_info[3])
-        self.pin_2 = Pin(2, isRainbow,self._create_pin2_position(pins_info[4], bar_info[1]), pins_info[0], pins_info[1], pins_info[2][1],trace_points_colour, pin_friction=0)
+        self.pin_1 = Pin(1,rod_id,isRainbow, pins_info[4], 0, 5, pins_info[2][0],trace_points_colour, pins_info[3])
+        self.pin_2 = Pin(2, rod_id,isRainbow,self._create_pin2_position(pins_info[4], bar_info[1]), pins_info[0], pins_info[1], pins_info[2][1],trace_points_colour, pin_friction=0)
         self.bar = Bar(*bar_info)
 
     def get_info(self):
@@ -131,12 +131,13 @@ class Bar:
 #--
 
 class Pin:
-    def __init__(self, pin_id, isRainbow ,position, weight, radius, colour, trace_pcolour=None, pin_friction=None):
+    def __init__(self, pin_id, rod_id,isRainbow ,position, weight, radius, colour, trace_pcolour=None, pin_friction=None):
         self.pin_vector = pygame.math.Vector2(position)
         self.x = self.pin_vector.x
         self.y = self.pin_vector.y
         self.position = [self.x, self.y]
         self.pin_id = pin_id
+        self.rod_id = rod_id
         self.weight = weight
         self.radius = radius
         self.colour = colour
@@ -147,6 +148,7 @@ class Pin:
         self.trace_points_isLine = True
         self.trace_points_isOn = True
         self.isRainbow = isRainbow
+        self.RAINBOW_step_direction = 0
 
     def update_pos(self, new_pos):
         self.pin_vector.update(new_pos[0], new_pos[1])
@@ -155,8 +157,8 @@ class Pin:
         self.position = [self.x, self.y]
         if self.pin_id == 2:
             self.calc_trace_points()
-            if self.isRainbow:
-                newColour = colour.changeRAINBOW(self.trace_points_colour)
+            if self.isRainbow :
+                newColour,self.RAINBOW_step_direction = colour.changeRAINBOW(self.trace_points_colour,self.RAINBOW_step_direction)
                 self.trace_points_colour = newColour
 
     def calc_trace_points(self):

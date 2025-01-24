@@ -48,7 +48,7 @@ def main():
     # ui_Sidebar = gui_Sidebar() # create side bar gui for editing and creating pendulums
 
     '''[Pendulum(DOUBLE, ORIGIN_POINT,RANDOM_COLOUR),'''
-    constants.pen_array.extend([Pendulum(DOUBLE, ORIGIN_POINT,RANDOM_COLOUR),Pendulum(SINGLE, [50, 50],RAINBOW,isRainbow=True )]) #add pendulums
+    constants.pen_array.extend([Pendulum(DOUBLE, ORIGIN_POINT,RAINBOW,isRainbow=True)]) #add pendulums
 
     M = Mouse() # create simulated mouse input
 
@@ -78,6 +78,8 @@ def main():
         elif (constants.simulationState == "SIMULATION"):
             if (ui.state == "SIDEBAR" and ui.sidebarState ==  "CREATE" and ui.inCreate):
                 ui = Gui.changeGui("CREATE")
+            elif (ui.state == "SIDEBAR" and ui.sidebarState ==  "INFO" and ui.was_inCreate):
+                ui = Gui.changeGui("INFO")
         
         # check which simulation state to run
         if constants.simulationState == "STARTMENU":
