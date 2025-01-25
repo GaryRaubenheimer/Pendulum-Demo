@@ -14,13 +14,16 @@ def draw_rods(screen, pen_array):
     return screen, pen_array
 
 def draw_trace_points(screen, rod):
-    if not rod.pin_2.trace_points_isLine:
-        for point in rod.pin_2.trace_points:
-            pygame.draw.circle(screen, rod.pin_2.trace_points_colour, point, 1)
-    else:
-        for i in range(len(rod.pin_2.trace_points)):
-            if i > 0:
-                pygame.draw.line(screen, rod.pin_2.trace_points_colour, rod.pin_2.trace_points[i-1], rod.pin_2.trace_points[i])
+    if rod.pin_2.trace_points_isOn:
+        # draw trace points as points
+        if not rod.pin_2.trace_points_isLine:
+            for point in rod.pin_2.trace_points:
+                pygame.draw.circle(screen, rod.pin_2.trace_points_colour, point, 1)
+        else:
+        # draw trace points as line
+            for i in range(len(rod.pin_2.trace_points)):
+                if i > 0:
+                    pygame.draw.line(screen, rod.pin_2.trace_points_colour, rod.pin_2.trace_points[i-1], rod.pin_2.trace_points[i])
 
 def draw_bar(screen, rod):
     pygame.draw.line(screen, rod.bar.colour, rod.pin_1.position, rod.pin_2.position, rod.bar.width)

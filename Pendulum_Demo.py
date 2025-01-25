@@ -109,8 +109,6 @@ def main():
 def run_simulationScreen(dt,M,event_array,ui_Sidebar):
     global draw_accuracy,physics_accuracy,simulation_display
 
-# TO DO: something to create pendulem to start
-
     # handle edit GUI widget events
     ui_Sidebar = handle_event_buffer(event_array, M, ui_Sidebar)
 
