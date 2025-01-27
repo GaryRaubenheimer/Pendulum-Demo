@@ -1,0 +1,56 @@
+# Bytecode files
+__pycache__/
+*.py[cod]
+
+# Virtual environment directories
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Distribution / packaging
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# IDE / editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+*.iml
+
+# OS-specific files
+.DS_Store        # macOS
+Thumbs.db        # Windows
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Test and coverage reports
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+*.hypothesis/
+*.tox/
+*.nox/
+
+# Logs
+*.log
+
+# Python profile and temporary files
+*.pyo
+*.pyd
+*.db
+*.sqlite
+
+# exe 
+*.spec
+
