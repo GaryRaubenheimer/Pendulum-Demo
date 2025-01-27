@@ -52,13 +52,38 @@ window.fill(DARK_GREEN) # DARK_GREEN Screen means that display could not be disp
 draw_accuracy = 0 # simulated frames counter
 physics_accuracy = 0 # speed of simulation counter
 
+def draw_gradient(surface, color1, color2):
+    for y in range(HEIGHT):
+        ratio = y / HEIGHT
+        r = int(color1[0] * (1 - ratio) + color2[0] * ratio)
+        g = int(color1[1] * (1 - ratio) + color2[1] * ratio)
+        b = int(color1[2] * (1 - ratio) + color2[2] * ratio)
+        pygame.draw.line(surface, (r, g, b), (0, y), (WIDTH, y))
+    return surface
 
+def draw_background_pattern(surface):
+    center_x = WIDTH * 3 // 8  # Center in the first 3/4 of the width
+    center_y = HEIGHT // 2
+    max_radius = min(WIDTH, HEIGHT) // 3
+
+    for i in range(10):
+        radius = max_radius - (i * (max_radius // 10))
+        color = (180 - i * 20, 220 - i * 20, 255 - i * 25)  # Light colors
+        pygame.draw.circle(surface, color, (center_x, center_y), radius, width=3)
+    return surface
+    
 def main():
-    global window, simulation_display, about_display, speed_factor, fps_factor, pen_array,draw_accuracy,physics_accuracy
+    global window, startMenu_display, simulation_display, speed_factor, fps_factor, pen_array,draw_accuracy,physics_accuracy
+
+    # Draw the gradient background
+    light_color1 = (180, 220, 255)  # Very light blue
+    light_color2 = (40, 100, 255)  # Slightly darker light blue
+    startMenu_display = draw_gradient(startMenu_display, light_color1, light_color2)
+    startMenu_display = draw_background_pattern(startMenu_display)
 
     # set initial simulation state
     constants.changeState("STARTMENU")
-    ui= Gui.gui_startMenu() # create start menu gui
+    ui= Gui.gui_startMenu(startMenu_display) # create start menu gui
 
     constants.pen_array.extend([Pendulum(SINGLE, [200,200],RANDOM_COLOUR),Pendulum(DOUBLE, ORIGIN_POINT,RAINBOW,isRainbow=True)]) #add initial pendulums
 
@@ -86,7 +111,7 @@ def main():
                 initiate = False
                 initiateAbout = True
         elif (constants.simulationState == "STARTMENU" and constants.prev_simulationState == "SIMULATION"):
-            ui = Gui.changeGui("MENU")
+            ui = Gui.changeGui("MENU",startMenu_display)
             initiate = True
             constants.pen_array = []
         elif (constants.simulationState == "SIMULATION"):
@@ -98,7 +123,7 @@ def main():
             ui = Gui.changeGui("ABOUT")
             initiateAbout = False
         elif (constants.simulationState == "STARTMENU" and constants.prev_simulationState == "ABOUTMENU" and initiateAbout == False):
-            ui = Gui.changeGui("MENU")
+            ui = Gui.changeGui("MENU",startMenu_display)
             initiateAbout = True
         
         # check which simulation state to run
@@ -179,8 +204,6 @@ def run_startMenuScreen(dt,M,event_array,ui_startMenu):
     while physics_accuracy >= GAME_PHYSICS_SPEED / constants.speed_factor:
         physics_accuracy -= GAME_PHYSICS_SPEED / constants.speed_factor
 
-    # draw edit Gui widgets
-    pygame.draw.rect(startMenu_display, BLACK, (0, 0, WIDTH, HEIGHT), BORDER_THICKNESS)
     ui_startMenu.draw()
 
     # update and reset draw_accuracy counter

@@ -9,7 +9,7 @@ slot_height = 40
 x_offset = 20
 y_offset = 5
 
-def changeGui(sidebarState):
+def changeGui(sidebarState,display = None):
     if sidebarState == "INFO":
         newUi = gui_Sidebar()
         #newUi.change_sidebar_state(sidebarState)
@@ -24,7 +24,7 @@ def changeGui(sidebarState):
         newUi =  gui_aboutMenu()
     elif sidebarState == "MENU":
         # change ui then set state beacuse the initial new ui state is startup
-        newUi =  gui_startMenu()
+        newUi =  gui_startMenu(display)
 
     return newUi
 
@@ -548,14 +548,14 @@ class gui_editPendulum(gui_Sidebar):
     #---
  
 class gui_startMenu(Gui):
-    def __init__(self):
+    def __init__(self,display):
         super().__init__()
         self.state = "MENU"
-        self.display = pygame.Surface((WIDTH, HEIGHT))
+        self.display = display
         self.initialize_startMenuGui()
 
     def draw(self):
-        self.display.fill(DARK_YELLOW)
+        #self.display.fill(DARK_YELLOW)
         if len(self.gui_widget_list) !=0:
             for category, widgets in self.gui_widget_list.items():
                 for name, widget in widgets.items():
