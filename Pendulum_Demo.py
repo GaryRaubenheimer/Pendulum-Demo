@@ -3,6 +3,8 @@ import pygame
 
 """
 todo:
+clean up code and add comments
+
 DONE move sidebar menu widgets up 
 DONE add speed lables
 DONE add instruction labels
@@ -11,7 +13,7 @@ DONE move edit menu widgets up
 DONE line tacepoint activate when activate edit again
 
 DONE add about menu with details
-add start background
+DONE add start background
 
 DONE make friction less harsh
 
