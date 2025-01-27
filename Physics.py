@@ -109,8 +109,8 @@ def update_angular_position_DOUBLE(rods):
     m1, m2 = rods[0].pin_2.weight, rods[1].pin_2.weight
     L1, L2 = rods[0].bar.length, rods[1].bar.length
     g  = GRAVITY
-    DAMPING_FACTOR_1 = 1 - rods[0].pin_1.friction
-    DAMPING_FACTOR_2 = 1 - rods[1].pin_1.friction
+    DAMPING_FACTOR_1 = 1 - rods[0].pin_1.friction*0.1
+    DAMPING_FACTOR_2 = 1 - rods[1].pin_1.friction*0.1
 
     term1 = -g * (2 * m1 + m2) * math.sin(t1)
     term2 = m2 * g * math.sin(t1 - 2 * t2)
@@ -145,7 +145,7 @@ def update_angular_position_SINGLE(rod):
     """
     Calculate the new angular position and velocity for a single pendulum.
     """
-    DAMPING_FACTOR = 1 - rod.pin_1.friction
+    DAMPING_FACTOR = 1 - rod.pin_1.friction*0.1
     theta = rod.angular_position
     angular_acceleration = -(GRAVITY / rod.bar.length) * math.sin(theta)
 

@@ -19,10 +19,13 @@ def changeGui(sidebarState):
     elif sidebarState == "EDIT":
         newUi = gui_editPendulum()
         #newUi.change_sidebar_state(sidebarState)
+    elif sidebarState == "ABOUT":
+        # change ui then set state beacuse the initial new ui state is startup
+        newUi =  gui_aboutMenu()
     elif sidebarState == "MENU":
         # change ui then set state beacuse the initial new ui state is startup
         newUi =  gui_startMenu()
-        constants.changeState("STARTMENU")
+
     return newUi
 
 
@@ -79,14 +82,23 @@ class gui_Sidebar(Gui):
     def create_Sidebar_lable_dict(self,x_offset,y_offset,slot_height):
         #(x, y, text, font_size=20, color=BLACK)
         lable_dict = {
-        "label_Sidebar"  : Label(x_offset, y_offset + slot_height*1, "Side Bar :", 37)
+        "label_Sidebar"              : Label(x_offset, y_offset, "Side Bar:", 37),
+        "label_simulationSpeed"      : Label(x_offset, y_offset + slot_height*2+10, "Simulation Speed:"),
+        "label_simulationFPS"        : Label(x_offset, y_offset + slot_height*4, "Simulation FPS:"),
+        "label_insructions"          : Label(x_offset, y_offset + slot_height*6, "Instructions:", 30),
+        "label_insructionsLeftClick" : Label(10, y_offset + slot_height*6+25, "Left Click - To edit Pendulum"),
+        "label_insructionsMiddleClick" : Label(10, y_offset + slot_height*6+60, "Middle Click - To delete Pendulum"),
+        "label_insructionsRightClick_Grey1" : Label(10, y_offset + slot_height*6+95, "Right Click - On GREY node"),
+        "label_insructionsRightClick_Grey2" : Label(20, y_offset + slot_height*6+115, "move whole Pendulum"),
+        "label_insructionsRightClick_Red1" : Label(10, y_offset + slot_height*6+145, "Right Click - On RED node to "),
+        "label_insructionsRightClick_Red2" : Label(20, y_offset + slot_height*6+165, "move and swing the node")
         }
         return lable_dict
 
     def create_Sidebar_button_dict(self,x_offset,y_offset,slot_height):
         #(x, y, width, height, color, hover_color, text='', font_size=20, text_color=(255, 255, 255), action=None)
         button_dict = {
-        "create_button" : Button(x_offset, slot_height*4, 150, 40, BLUE, RED, "Create Pendulum", action = self.change_sidebarStateToCreate),
+        "create_button" : Button(x_offset, slot_height*1, 150, 40, BLUE, RED, "Create New Pendulum", action = self.change_sidebarStateToCreate),
         "back_button" : Button(x_offset, slot_height*15, 150, 40, BLUE, RED, "Back to Menu",action = self.change_GuiToMenu)
         }
         return button_dict
@@ -95,8 +107,8 @@ class gui_Sidebar(Gui):
         #(self, x, y, width, height, min_value=0.0, real_value=0.5, max_value=1.0, color=BLUE, action=None)
         slider_dict = {
         #"slider_pin_friction" : Slider(x_offset+5, slot_height*6,  250, 10, 0, 0, 1, action=self.change_friction)
-        "slider_simulated_frames" : Slider(50, HEIGHT // 2, WIDTH/4-100, 10, 1, constants.fps_factor, 60, RED,action=self.change_fps),
-        "slider_si,ulation_speed" : Slider(50, (HEIGHT // 3)*2, WIDTH/4-100, 10, min_value=1, max_value=20, real_value=constants.speed_factor, color=GREEN, action=self.change_speed)
+        "slider_simulated_frames" : Slider(50, y_offset + slot_height*5-10, WIDTH/4-100, 10, 1, constants.fps_factor, 60, RED,action=self.change_fps),
+        "slider_simulation_speed" : Slider(50, y_offset + slot_height*3, WIDTH/4-100, 10, min_value=1, max_value=20, real_value=constants.speed_factor, color=GREEN, action=self.change_speed)
         }
         return slider_dict
     
@@ -147,16 +159,16 @@ class gui_createPendulum(gui_Sidebar):
     def create_createPendulum_lable_dict(self,x_offset,y_offset,slot_height):
         #(x, y, text, font_size=20, color=BLACK)
         lable_dict = {
-        "label_createPendulum"  : Label(x_offset, y_offset + slot_height*1, "Create Pendulum :", 37),
-        "label_quickAddPendulum"  : Label(x_offset, y_offset + slot_height*5, "Quick add Pendulum:")
+        "label_createPendulum"  : Label(x_offset, y_offset, "Create Pendulum :", 37),
+        "label_quickAddPendulum": Label(x_offset, y_offset + slot_height*1, "Quick add new Pendulum:")
         }
         return lable_dict
 
     def create_createPendulum_button_dict(self,x_offset,y_offset,slot_height):
         #(x, y, width, height, color, hover_color, text='', font_size=20, text_color=(255, 255, 255), action=None)
         button_dict = {
-        "SinglePendulum_button" : Button(x_offset, slot_height*6, 150, 40, BLUE, LIGHT_BLUE, "Single Pendulum",action =self.create_newSinglePendulum),
-        "DoublePendulum_button" : Button(x_offset, slot_height*8, 150, 40, BLUE, LIGHT_BLUE, "Double Pendulum",action =self.create_newDoublePendulum),
+        "SinglePendulum_button" : Button(x_offset, slot_height*2, 150, 40, BLUE, LIGHT_BLUE, "Single Pendulum",action =self.create_newSinglePendulum),
+        "DoublePendulum_button" : Button(x_offset, slot_height*3+10, 150, 40, BLUE, LIGHT_BLUE, "Double Pendulum",action =self.create_newDoublePendulum),
         #"confirm_button" : Button(x_offset, slot_height*13, 150, 40, BLUE, DARK_GREEN, "Confirm",action = self.create_newCustomPendulum),
         "back_button" : Button(x_offset, slot_height*15, 150, 40, BLUE, RED, "Back",action =self.change_sidebarStateToInfo)
         }
@@ -263,15 +275,15 @@ class gui_editPendulum(gui_Sidebar):
         lable_dict = {
         "label_Pendulum_Number": Label(x_offset, y_offset,                 "Pendulum Edit:", 37),
         #"label_Pendulum_Type"  : Label(x_offset, y_offset + slot_height*1, "Pendulum Type:"),
-        "label_Rod_Number"     : Label(x_offset, y_offset + slot_height*3, "Rod Selection:"),
-        "label_Pin_Friction"   : Label(x_offset, y_offset + slot_height*5, "Pin Friction:"),
-        "label_Rod_Length"     : Label(x_offset, y_offset + slot_height*7, "Rod Length:"),
-        "label_Bob_Weight"     : Label(x_offset, y_offset + slot_height*9, "Bob Weight:"),
-        "label_Bob_Radius"     : Label(x_offset, y_offset + slot_height*11,"Bob Radius:"),
-        "label_Trace_Points"   : Label(x_offset, y_offset + slot_height*13,"Trace Points On/Off:"),
-        "label_TP_Off"         : Label(x_offset+15, y_offset + slot_height*14-10,"Off"),
-        "label_TP_Dot"         : Label(x_offset+75, y_offset + slot_height*14-10,"Dot"),
-        "label_TP_Line"        : Label(x_offset+165, y_offset + slot_height*14-10,"Line")
+        "label_Rod_Number"     : Label(x_offset, y_offset + slot_height*1, "Rod Selection:"),
+        "label_Pin_Friction"   : Label(x_offset, y_offset + slot_height*3, "Pin Friction:"),
+        "label_Rod_Length"     : Label(x_offset, y_offset + slot_height*5, "Rod Length:"),
+        "label_Bob_Weight"     : Label(x_offset, y_offset + slot_height*7, "Bob Weight:"),
+        "label_Bob_Radius"     : Label(x_offset, y_offset + slot_height*9,"Bob Radius:"),
+        "label_Trace_Points"   : Label(x_offset, y_offset + slot_height*11,"Trace Points On/Off:"),
+        "label_TP_Off"         : Label(x_offset+15, y_offset + slot_height*12-10,"Off"),
+        "label_TP_Dot"         : Label(x_offset+75, y_offset + slot_height*12-10,"Dot"),
+        "label_TP_Line"        : Label(x_offset+165, y_offset + slot_height*12-10,"Line")
         }
         return lable_dict
 
@@ -279,17 +291,18 @@ class gui_editPendulum(gui_Sidebar):
         #(x, y, width, height, text, default=True, action=None)
         toggleButton_dict = {
         #"toggle_button_type" : ToggleButton(((WIDTH/4)/2)-50, slot_height*2-10, 100, 35, "SINGLE","DOUBLE" ,is_active=True),
-        "toggle_button_rod1" : ToggleButton(x_offset, slot_height*4-10, 100, 35, "ROD 1",is_linked = True, is_active=True,action = self.change_rod_selection),
-        "toggle_button_rod2" : ToggleButton(x_offset+150, slot_height*4-10, 100, 35, "ROD 2", is_linked = True, is_active = False, action = self.change_rod_selection)
+        "toggle_button_rod1" : ToggleButton(x_offset, slot_height*2-10, 100, 35, "ROD 1",is_linked = True, is_active=True,action = self.change_rod_selection),
+        # toggle 2 gets added later
+        #"toggle_button_rod2" : ToggleButton(x_offset+150, slot_height*1-10, 100, 35, "ROD 2", is_linked = True, is_active = False, action = self.change_rod_selection)
         }
         return toggleButton_dict
 
     def create_guiEdit_radioButton_dict(self,x_offset,y_offset,slot_height):
         #(x, y, radius, color, check_color, hover_color, action=None)
         radioButton_dict = {
-        "radio_button_off"     : RadioButton(x_offset, y_offset + slot_height*14, 10, LIGHT_GREY, BLACK, DARK_GREY, is_checked=False,action=self.change_trace_points_off),
-        "radio_button_points"    : RadioButton(x_offset+60, y_offset + slot_height*14, 10, LIGHT_GREY, BLACK, DARK_GREY,is_checked=False,action=self.change_trace_points_dot),
-        "radio_button_lines"    : RadioButton(x_offset+150, y_offset + slot_height*14, 10, LIGHT_GREY, BLACK, DARK_GREY,is_checked=True,action=self.change_trace_points_line)
+        "radio_button_off"     : RadioButton(x_offset, y_offset + slot_height*12, 10, LIGHT_GREY, BLACK, DARK_GREY, is_checked=False,action=self.change_trace_points_off),
+        "radio_button_points"    : RadioButton(x_offset+60, y_offset + slot_height*12, 10, LIGHT_GREY, BLACK, DARK_GREY,is_checked=False,action=self.change_trace_points_dot),
+        "radio_button_lines"    : RadioButton(x_offset+150, y_offset + slot_height*12, 10, LIGHT_GREY, BLACK, DARK_GREY,is_checked=False,action=self.change_trace_points_line)
         }
         return radioButton_dict
 
@@ -303,10 +316,10 @@ class gui_editPendulum(gui_Sidebar):
     def create_guiEdit_slider_dict(self,x_offset,y_offset,slot_height):
         #(self, x, y, width, height, min_value=0.0, real_value=0.5, max_value=1.0, color=BLUE, action=None)
         slider_dict = {
-        "slider_pin_friction" : Slider(x_offset+5, slot_height*6,  250, 10, 0, 0, 1, action=self.change_friction),
-        "slider_rod_length"   : Slider(x_offset+5, slot_height*8,  250, 10, 25, 25, 250, action=self.change_length),
-        "slider_bob_weight"   : Slider(x_offset+5, slot_height*10,  250, 10, 1, 1, 50, action=self.change_weight),
-        "slider_bob_radius"   : Slider(x_offset+5, slot_height*12,  250, 10, 5, 5, 35, action=self.change_radius)
+        "slider_pin_friction" : Slider(x_offset+5, slot_height*4,  250, 10, 0, 0, 1, action=self.change_friction),
+        "slider_rod_length"   : Slider(x_offset+5, slot_height*6,  250, 10, 25, 25, 250, action=self.change_length),
+        "slider_bob_weight"   : Slider(x_offset+5, slot_height*8,  250, 10, 1, 1, 50, action=self.change_weight),
+        "slider_bob_radius"   : Slider(x_offset+5, slot_height*10,  250, 10, 5, 5, 35, action=self.change_radius)
         }
         return slider_dict
     
@@ -336,7 +349,6 @@ class gui_editPendulum(gui_Sidebar):
                 rods_info.append(t2[:])
         return pen_type,rods_info
     
-
     def change_guiEdit_widget_info(self,pen):
         pen_type, rods_info = self.get_pen_info(pen)
 
@@ -367,11 +379,12 @@ class gui_editPendulum(gui_Sidebar):
                     else:
                         widget.change_value_to(False)
 
-                if name == "radio_buttons_points":
+                """if name == "radio_buttons_points":
                     if rods_info[0][5]:
                         widget.change_value_to(False)
                     else:
-                        widget.change_value_to(True)
+                        widget.change_value_to(True)"""
+        self.check_trace_point_state()
 
     def change_guiEdit_widget_slider_info(self,name,widget,rod_info):
         if name == "slider_pin_friction":
@@ -387,7 +400,7 @@ class gui_editPendulum(gui_Sidebar):
     def toggleButton_dict_add_rod2(self,x_offset,y_offset,slot_height):
         for category, widgets in self.gui_widget_list.items():
             if category == "toggleButtons":
-                widgets.update({"toggle_button_rod2" : ToggleButton(x_offset+150, slot_height*4-10, 100, 35, "ROD 2", is_linked = True, is_active = False, action = self.change_rod_selection)})
+                widgets.update({"toggle_button_rod2" : ToggleButton(x_offset+150, slot_height*2-10, 100, 35, "ROD 2", is_linked = True, is_active = False, action = self.change_rod_selection)})
         return self.gui_widget_list
     
     def toggleButton_dict_remove_rod2(self):
@@ -448,6 +461,42 @@ class gui_editPendulum(gui_Sidebar):
     def change_radius(self,silder_radius):
         self.selected_rod.pin_2.change_radius(silder_radius.get_real_value())
 
+    def check_trace_point_state(self):
+        for rod in self.selected_pendulum.rods:
+            if rod.pin_2.trace_points_isLine == False and rod.pin_2.trace_points_isOn == False:
+                if self.gui_widget_list:
+                    for category, widgets in self.gui_widget_list.items():
+                        for name, widget in widgets.items():
+                           if isinstance(widget, RadioButton):
+                                if name == "radio_button_off":
+                                    widget.change_value_to(True)
+                                if name == "radio_button_points":
+                                    widget.change_value_to(False)
+                                if name == "radio_button_lines":
+                                    widget.change_value_to(False)
+            elif rod.pin_2.trace_points_isLine == True and rod.pin_2.trace_points_isOn == True:
+                if self.gui_widget_list:
+                    for category, widgets in self.gui_widget_list.items():
+                        for name, widget in widgets.items():
+                           if isinstance(widget, RadioButton):
+                                if name == "radio_button_off":
+                                    widget.change_value_to(False)
+                                if name == "radio_button_points":
+                                    widget.change_value_to(False)
+                                if name == "radio_button_lines":
+                                    widget.change_value_to(True)
+            elif rod.pin_2.trace_points_isLine == False and rod.pin_2.trace_points_isOn == True:
+                if self.gui_widget_list:
+                    for category, widgets in self.gui_widget_list.items():
+                        for name, widget in widgets.items():
+                           if isinstance(widget, RadioButton):
+                                if name == "radio_button_off":
+                                    widget.change_value_to(False)
+                                if name == "radio_button_points":
+                                    widget.change_value_to(True)
+                                if name == "radio_button_lines":
+                                    widget.change_value_to(False)         
+
     def change_trace_points_off(self,radioButton_trace_points):
         if radioButton_trace_points:
             for rod in self.selected_pendulum.rods:
@@ -497,8 +546,7 @@ class gui_editPendulum(gui_Sidebar):
                             widget.change_value_to(True)
 
     #---
-
-
+ 
 class gui_startMenu(Gui):
     def __init__(self):
         super().__init__()
@@ -550,11 +598,17 @@ class gui_startMenu(Gui):
     def select_quit(self):
         constants.changeState("QUIT")
     
-'''
 class gui_aboutMenu(Gui):
     def __init__(self):
         super().__init__()
+        self.state = "ABOUTMENU"
         self.display = pygame.Surface((WIDTH, HEIGHT))
+        self.initialize_startAboutGui()
+
+    def initialize_startAboutGui(self):
+        # Menu UI initialization
+        self.gui_widget_list = self.create_startMenu_widget_list()
+        return self.gui_widget_list
 
     def draw(self):
         self.display.fill(LIGHT_CYAN)
@@ -572,9 +626,27 @@ class gui_aboutMenu(Gui):
     
     def create_guiEdit_lable_dict(self,x_offset,y_offset,slot_height):
         #(x, y, text, font_size=20, color=BLACK)
-        pass
+        lable_dict = {
+        "label_Title_PendulumDemo": Label(WIDTH/8, slot_height*1,"About Pendulum Demo", 40),
+        "label_Text1_1": Label(WIDTH/10, slot_height*3,
+                             "The Pendulum Demo project explores the motion of single and double pendulums."),
+        "label_Text1_2": Label(WIDTH/10, slot_height*3+25,
+                             "While single pendulums exhibit predictable behavior, double pendulums showcase chaotic, sensitive motion and instability."),
+        "label_Text2_1": Label(WIDTH/10, slot_height*6,
+                             "This project was created to learn Pygame, Visual Studio Code, and version control with Git and GitHub, "),
+        "label_Text2_2": Label(WIDTH/10, slot_height*6+25,
+                             "while combining my interest in physics and programming. It demonstrates my ability to build interactive applications")
+        }
+        return lable_dict
 
     def create_guiEdit_button_dict(self,x_offset,y_offset,slot_height):
         #(x, y, width, height, color, hover_color, text='', font_size=20, text_color=(255, 255, 255), action=None)
-        pass
-    '''
+        button_dict = {
+        "back_button" : Button(x_offset, slot_height*15, 150, 40, LIGHT_BLUE, BLUE, "Back", action=self.select_backToMenu)
+        }
+        return button_dict
+    
+    def select_backToMenu(self):
+        self.state = "MENU"
+        self.kill_gui_widget_list()
+        constants.changeState("STARTMENU")

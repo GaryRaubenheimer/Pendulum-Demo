@@ -90,7 +90,6 @@ def update_pendulum_events(M, dt):
     elif not M.left_held and M.prev_state:
         release_held_pendulum(M, dt)
 
-
 def update_held_pendulum(M, pos):
     if M.collision_item:
         held_pendulum, held_pin = M.collision_item

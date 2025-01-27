@@ -1,6 +1,22 @@
 import sys
 import pygame
 
+"""
+todo:
+DONE move sidebar menu widgets up 
+DONE add speed lables
+DONE add instruction labels
+
+DONE move edit menu widgets up 
+DONE line tacepoint activate when activate edit again
+
+DONE add about menu with details
+add start background
+
+DONE make friction less harsh
+
+"""
+
 #  in python module  imports create seperate instances of global varialbles
 import constants
 import colour 
@@ -25,8 +41,8 @@ window = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED + pygame.RESIZAB
 simulation_display = pygame.Surface((WIDTH/4*3, HEIGHT))
 startMenu_display = pygame.Surface((WIDTH, HEIGHT))
 startMenu_display.fill(RED)
-about_display = pygame.Surface((WIDTH, HEIGHT))
-about_display.fill(YELLOW)
+#about_display = pygame.Surface((WIDTH, HEIGHT))
+#about_display.fill(YELLOW)
 #error_display = pygame.Surface((WIDTH, HEIGHT))
 #error_display.fill(BLUE)
 
@@ -43,16 +59,13 @@ def main():
     # set initial simulation state
     constants.changeState("STARTMENU")
     ui= Gui.gui_startMenu() # create start menu gui
-    
-    # ui_About = gui_aboutMenu() # create about gui 
-    # ui_Sidebar = gui_Sidebar() # create side bar gui for editing and creating pendulums
 
-    '''[Pendulum(DOUBLE, ORIGIN_POINT,RANDOM_COLOUR),'''
-    constants.pen_array.extend([Pendulum(DOUBLE, ORIGIN_POINT,RAINBOW,isRainbow=True)]) #add pendulums
+    constants.pen_array.extend([Pendulum(SINGLE, [200,200],RANDOM_COLOUR),Pendulum(DOUBLE, ORIGIN_POINT,RAINBOW,isRainbow=True)]) #add initial pendulums
 
     M = Mouse() # create simulated mouse input
 
     initiate = True
+    initiateAbout = True
 
     # game loop
     running = True
@@ -71,6 +84,7 @@ def main():
             if ui.state != "SIDEBAR":
                 ui = Gui.changeGui("INFO")
                 initiate = False
+                initiateAbout = True
         elif (constants.simulationState == "STARTMENU" and constants.prev_simulationState == "SIMULATION"):
             ui = Gui.changeGui("MENU")
             initiate = True
@@ -80,12 +94,18 @@ def main():
                 ui = Gui.changeGui("CREATE")
             elif (ui.state == "SIDEBAR" and ui.sidebarState ==  "INFO" and ui.was_inCreate):
                 ui = Gui.changeGui("INFO")
+        elif (constants.simulationState == "ABOUTMENU" and initiateAbout):
+            ui = Gui.changeGui("ABOUT")
+            initiateAbout = False
+        elif (constants.simulationState == "STARTMENU" and constants.prev_simulationState == "ABOUTMENU" and initiateAbout == False):
+            ui = Gui.changeGui("MENU")
+            initiateAbout = True
         
         # check which simulation state to run
         if constants.simulationState == "STARTMENU":
             ui = run_startMenuScreen(dt,M,event_array,ui)
         elif constants.simulationState == "ABOUTMENU":
-            run_aboutScreen()
+            ui = run_aboutScreen(dt,M,event_array,ui)
         elif constants.simulationState == "SIMULATION":
             ui = run_simulationScreen(dt,M,event_array,ui)
         else:
@@ -159,12 +179,8 @@ def run_startMenuScreen(dt,M,event_array,ui_startMenu):
     while physics_accuracy >= GAME_PHYSICS_SPEED / constants.speed_factor:
         physics_accuracy -= GAME_PHYSICS_SPEED / constants.speed_factor
 
-    # update and draw edit Gui widgets
-    if ui_startMenu.gui_widget_list:
-        for category, widgets in ui_startMenu.gui_widget_list.items():
-            for name, widget in widgets.items():
-               if isinstance(widget, Slider):
-                    widget.update()
+    # draw edit Gui widgets
+    pygame.draw.rect(startMenu_display, BLACK, (0, 0, WIDTH, HEIGHT), BORDER_THICKNESS)
     ui_startMenu.draw()
 
     # update and reset draw_accuracy counter
@@ -172,16 +188,40 @@ def run_startMenuScreen(dt,M,event_array,ui_startMenu):
         draw_accuracy -= 1 / constants.fps_factor * 1000
 
     # draw the displays on the window and flip screen
-    startMenu_display.fill(LIGHT_GREY)
-    pygame.draw.rect(simulation_display, BLACK, (0, 0, WIDTH, HEIGHT), BORDER_THICKNESS)
+    
     window.blit(startMenu_display, (0, 0))
     window.blit(ui_startMenu.display, (0, 0))
 
     return ui_startMenu
 
 
-def run_aboutScreen():
-    pass
+def run_aboutScreen(dt,M,event_array,ui_aboutMenu):
+    global startMenu_display,draw_accuracy,physics_accuracy
+
+    # handle edit GUI widget events
+    ui_aboutMenu = handle_event_buffer(event_array, M, ui_aboutMenu)
+
+    # udate mouse movements and collistion detection
+    M.update(dt) 
+
+    # update and reset physics_accuracy counter
+    while physics_accuracy >= GAME_PHYSICS_SPEED / constants.speed_factor:
+        physics_accuracy -= GAME_PHYSICS_SPEED / constants.speed_factor
+
+    # draw edit Gui widgets
+    pygame.draw.rect(startMenu_display, BLACK, (0, 0, WIDTH, HEIGHT), BORDER_THICKNESS)
+    ui_aboutMenu.draw()
+
+    # update and reset draw_accuracy counter
+    while draw_accuracy >= 1 / constants.fps_factor * 1000:
+        draw_accuracy -= 1 / constants.fps_factor * 1000
+
+    # draw the displays on the window and flip screen
+    window.blit(startMenu_display, (0, 0))
+    window.blit(ui_aboutMenu.display, (0, 0))
+
+    return ui_aboutMenu
+
 
 if __name__ == "__main__":
     main()
