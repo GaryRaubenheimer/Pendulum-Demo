@@ -6,6 +6,7 @@ from constants import *
 # Get pygame instance from game context
 pygame = get_pygame()
 
+
 class Mouse:
     def __init__(self):
         self.check_buttons()
@@ -37,11 +38,16 @@ class Mouse:
         lower_bound_x = WIDTH / 4 + pin.x - pin.radius
         upper_bound_y = pin.y + pin.radius
         lower_bound_y = pin.y - pin.radius
-        return lower_bound_x <= mouse_x <= upper_bound_x and lower_bound_y <= mouse_y <= upper_bound_y
+        return (
+            lower_bound_x <= mouse_x <= upper_bound_x
+            and lower_bound_y <= mouse_y <= upper_bound_y
+        )
 
     def collision_pen_check(self, pen):
         for rod in pen.rods:
-            if self.collision_pin_check(rod.pin_1) and not (pen.type == DOUBLE and rod.rod_id == 2):
+            if self.collision_pin_check(rod.pin_1) and not (
+                pen.type == DOUBLE and rod.rod_id == 2
+            ):
                 self.collision_item = [pen, rod.pin_1]
             elif self.collision_pin_check(rod.pin_2):
                 self.collision_item = [pen, rod.pin_2]

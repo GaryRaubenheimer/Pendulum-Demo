@@ -4,6 +4,7 @@ from constants import *
 
 FRICTION_COEFFICIENT = 1
 
+
 def update_rods(rods, isSplit, pen_type):
     """
     Update the state of the rods based on their type (single or double pendulum) and split status.
@@ -15,7 +16,10 @@ def update_rods(rods, isSplit, pen_type):
             rod.update()
     elif pen_type == DOUBLE:
         if not isSplit:
-            if rods[0].pin_1.friction != FRICTION_COEFFICIENT and rods[1].pin_1.friction != FRICTION_COEFFICIENT:
+            if (
+                rods[0].pin_1.friction != FRICTION_COEFFICIENT
+                and rods[1].pin_1.friction != FRICTION_COEFFICIENT
+            ):
                 # double and not at full friction
                 rods = update_angular_position_DOUBLE(rods)
                 rods[0].update()
@@ -24,7 +28,10 @@ def update_rods(rods, isSplit, pen_type):
                 rods[1].pin_1.update_pos(pos)
             else:
                 # double and both pins at full friction
-                if rods[0].pin_1.friction == FRICTION_COEFFICIENT and rods[1].pin_1.friction == FRICTION_COEFFICIENT:
+                if (
+                    rods[0].pin_1.friction == FRICTION_COEFFICIENT
+                    and rods[1].pin_1.friction == FRICTION_COEFFICIENT
+                ):
                     rods[0].update()
                     rods[1].update()
                     pos = rods[0].pin_2.position
@@ -38,9 +45,11 @@ def update_rods(rods, isSplit, pen_type):
                     rods[1].pin_1.update_pos(pos)
                 # double and second pin at full friction
                 elif rods[1].pin_1.friction == FRICTION_COEFFICIENT:
-                    #add second rod weight
+                    # add second rod weight
                     temp_rodweight = rods[0].pin_2.weight
-                    rods[0].pin_2.change_weight(rods[0].pin_2.weight + rods[1].pin_2.weight)
+                    rods[0].pin_2.change_weight(
+                        rods[0].pin_2.weight + rods[1].pin_2.weight
+                    )
                     rods[0] = update_angular_position_SINGLE(rods[0])
                     rods[0].update()
                     rods[1].update()
@@ -57,6 +66,7 @@ def update_rods(rods, isSplit, pen_type):
                     rod.update()
     return rods
 
+
 def stabilise_angle(rod):
     """
     Normalize the angular position of the rod to be within -pi to pi.
@@ -65,7 +75,8 @@ def stabilise_angle(rod):
         rod.angular_position -= 2 * math.pi
     elif rod.angular_position < -math.pi:
         rod.angular_position += 2 * math.pi
-    return rod 
+    return rod
+
 
 def stabilise_speed(rod):
     """
@@ -73,6 +84,7 @@ def stabilise_speed(rod):
     """
     rod.angular_velocity = max(min(rod.angular_velocity, SPEED_LIMIT), -SPEED_LIMIT)
     return rod
+
 
 def stabilise_DOUBLE(rods):
     """
@@ -83,6 +95,7 @@ def stabilise_DOUBLE(rods):
         rod = stabilise_speed(rod)
     return rods
 
+
 def stabilise_SINGLE(rod):
     """
     Apply angle and speed stabilization to a single rod.
@@ -91,14 +104,19 @@ def stabilise_SINGLE(rod):
     rod = stabilise_speed(rod)
     return rod
 
+
 def stabilise_small_angle(rod):
     """
     Set angular position and velocity to zero if they are very small, to prevent unnecessary oscillations.
     """
-    if -0.0005 < rod.angular_position / math.pi < 0.0005 and -0.00005 < rod.angular_velocity / math.pi < 0.00005:
+    if (
+        -0.0005 < rod.angular_position / math.pi < 0.0005
+        and -0.00005 < rod.angular_velocity / math.pi < 0.00005
+    ):
         rod.angular_position = 0
         rod.angular_velocity = 0
     return rod
+
 
 def update_angular_position_DOUBLE(rods):
     """
@@ -108,20 +126,22 @@ def update_angular_position_DOUBLE(rods):
     w1, w2 = rods[0].angular_velocity, rods[1].angular_velocity
     m1, m2 = rods[0].pin_2.weight, rods[1].pin_2.weight
     L1, L2 = rods[0].bar.length, rods[1].bar.length
-    g  = GRAVITY
-    DAMPING_FACTOR_1 = 1 - rods[0].pin_1.friction*0.1
-    DAMPING_FACTOR_2 = 1 - rods[1].pin_1.friction*0.1
+    g = GRAVITY
+    DAMPING_FACTOR_1 = 1 - rods[0].pin_1.friction * 0.1
+    DAMPING_FACTOR_2 = 1 - rods[1].pin_1.friction * 0.1
 
     term1 = -g * (2 * m1 + m2) * math.sin(t1)
     term2 = m2 * g * math.sin(t1 - 2 * t2)
-    term3 = 2 * math.sin(t1 - t2) * m2 * (w2 ** 2 * L2 + w1 ** 2 * L1 * math.cos(t1 - t2))
+    term3 = 2 * math.sin(t1 - t2) * m2 * (w2**2 * L2 + w1**2 * L1 * math.cos(t1 - t2))
     a1 = (term1 - term2 - term3) / (L1 * (2 * m1 + m2 - m2 * math.cos(2 * t1 - 2 * t2)))
 
     term1 = 2 * math.sin(t1 - t2)
-    term2 = w1 ** 2 * L1 * (m1 + m2)
+    term2 = w1**2 * L1 * (m1 + m2)
     term3 = g * (m1 + m2) * math.cos(t1)
-    term4 = w2 ** 2 * L2 * m2 * math.cos(t1 - t2)
-    a2 = (term1 * (term2 + term3 + term4)) / (L2 * (2 * m1 + m2 - m2 * math.cos(2 * t1 - 2 * t2)))
+    term4 = w2**2 * L2 * m2 * math.cos(t1 - t2)
+    a2 = (term1 * (term2 + term3 + term4)) / (
+        L2 * (2 * m1 + m2 - m2 * math.cos(2 * t1 - 2 * t2))
+    )
 
     rods[0].angular_velocity += a1
     rods[0].angular_position += rods[0].angular_velocity
@@ -141,11 +161,12 @@ def update_angular_position_DOUBLE(rods):
 
     return rods
 
+
 def update_angular_position_SINGLE(rod):
     """
     Calculate the new angular position and velocity for a single pendulum.
     """
-    DAMPING_FACTOR = 1 - rod.pin_1.friction*0.1
+    DAMPING_FACTOR = 1 - rod.pin_1.friction * 0.1
     theta = rod.angular_position
     angular_acceleration = -(GRAVITY / rod.bar.length) * math.sin(theta)
 
