@@ -1,43 +1,30 @@
 import sys
-import pygame
 
-"""
-todo:
-clean up code and add comments
+# Import game context instead of pygame directly
+from game_context import get_game_context, get_pygame
 
-DONE move sidebar menu widgets up 
-DONE add speed lables
-DONE add instruction labels
-
-DONE move edit menu widgets up 
-DONE line tacepoint activate when activate edit again
-
-DONE add about menu with details
-DONE add start background
-
-DONE make friction less harsh
-
-"""
-
-#  in python module  imports create seperate instances of global varialbles
+#  In python module, imports create seperate instances of global varialbles
 import constants
 import colour 
 import Gui 
 
-# _this below is bad practice_
-# from constants import *
-from Pendulum import *
-from Render import *
-from Event import *
-from Input import *
-from Widgets import *
-# from Gui import *
+# Import specific classes and functions from correct modules
+from Pendulum import Pendulum
+from Render import draw_rods
+from Event import pygame_event_buffer, handle_event_buffer, update_pendulum_events
+from Input import Mouse
+from Widgets import Slider
+from constants import (WIDTH, HEIGHT, GAME_FRAME_SPEED, GAME_PHYSICS_SPEED, 
+                      BORDER_THICKNESS, SINGLE, DOUBLE, ORIGIN_POINT)
+from colour import RED, LIGHT_GREY, BLACK, DARK_GREEN, RAINBOW
 
-# initiate pygame window and clock
-pygame.init()
-pygame.display.set_caption('Pendulum Demo')
-clock = pygame.time.Clock()
-window = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED + pygame.RESIZABLE)
+# Initialize game context and get pygame instance
+game_context = get_game_context()
+pygame = get_pygame()
+
+# Initialize the display using game context
+window = game_context.initialize_display(WIDTH, HEIGHT, 'Pendulum Demo')
+clock = game_context.get_clock()
 
 # create pygame surfaces - surfaces act as background
 simulation_display = pygame.Surface((WIDTH/4*3, HEIGHT))
@@ -87,7 +74,7 @@ def main():
     constants.changeState("STARTMENU")
     ui= Gui.gui_startMenu(startMenu_display) # create start menu gui
 
-    constants.pen_array.extend([Pendulum(SINGLE, [200,200],RANDOM_COLOUR),Pendulum(DOUBLE, ORIGIN_POINT,RAINBOW,isRainbow=True)]) #add initial pendulums
+    constants.pen_array.extend([Pendulum(SINGLE, [200,200],colour.get_RANDOM_COLOUR()),Pendulum(DOUBLE, ORIGIN_POINT,RAINBOW,isRainbow=True)]) #add initial pendulums
 
     M = Mouse() # create simulated mouse input
 

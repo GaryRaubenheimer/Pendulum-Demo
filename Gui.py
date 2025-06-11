@@ -2,8 +2,16 @@ import constants
 import random
 import colour 
 
-from Widgets import *
-from Pendulum import *
+# Import specific classes instead of wildcard imports from correct modules
+from Widgets import (Label, Button, Slider, ToggleButton, RadioButton)
+from Pendulum import Pendulum
+from game_context import get_pygame
+from constants import WIDTH, HEIGHT, SINGLE, DOUBLE
+from colour import (BLUE, RED, LIGHT_BLUE, LIGHT_CYAN, GREEN, LIGHT_GREY, 
+                   BLACK, DARK_GREY, RAINBOW)
+
+# Get pygame instance from game context
+pygame = get_pygame()
 
 slot_height = 40
 x_offset = 20
@@ -73,27 +81,27 @@ class gui_Sidebar(Gui):
     
     def create_Sidebar_widget_list(self):
         gui_widget_list = {
-        "labels"         :self.create_Sidebar_lable_dict(x_offset,y_offset,slot_height),
+        "labels"         :self.create_Sidebar_label_dict(x_offset,y_offset,slot_height),
         "buttons"        :self.create_Sidebar_button_dict(x_offset,y_offset,slot_height),
         "sliders"        :self.create_Sidebar_slider_dict(x_offset,y_offset,slot_height)
         }
         return gui_widget_list
     
-    def create_Sidebar_lable_dict(self,x_offset,y_offset,slot_height):
+    def create_Sidebar_label_dict(self,x_offset,y_offset,slot_height):
         #(x, y, text, font_size=20, color=BLACK)
-        lable_dict = {
+        label_dict = {
         "label_Sidebar"              : Label(x_offset, y_offset, "Side Bar:", 37),
         "label_simulationSpeed"      : Label(x_offset, y_offset + slot_height*2+10, "Simulation Speed:"),
         "label_simulationFPS"        : Label(x_offset, y_offset + slot_height*4, "Simulation FPS:"),
-        "label_insructions"          : Label(x_offset, y_offset + slot_height*6, "Instructions:", 30),
-        "label_insructionsLeftClick" : Label(10, y_offset + slot_height*6+25, "Left Click - To edit Pendulum"),
-        "label_insructionsMiddleClick" : Label(10, y_offset + slot_height*6+60, "Middle Click - To delete Pendulum"),
-        "label_insructionsRightClick_Grey1" : Label(10, y_offset + slot_height*6+95, "Right Click - On GREY node"),
-        "label_insructionsRightClick_Grey2" : Label(20, y_offset + slot_height*6+115, "move whole Pendulum"),
-        "label_insructionsRightClick_Red1" : Label(10, y_offset + slot_height*6+145, "Right Click - On RED node to "),
-        "label_insructionsRightClick_Red2" : Label(20, y_offset + slot_height*6+165, "move and swing the node")
+        "label_instructions"         : Label(x_offset, y_offset + slot_height*6, "Instructions:", 30),
+        "label_instructionsLeftClick" : Label(10, y_offset + slot_height*6+25, "Left Click - To edit Pendulum"),
+        "label_instructionsMiddleClick" : Label(10, y_offset + slot_height*6+60, "Middle Click - To delete Pendulum"),
+        "label_instructionsRightClick_Grey1" : Label(10, y_offset + slot_height*6+95, "Right Click - On GREY node"),
+        "label_instructionsRightClick_Grey2" : Label(20, y_offset + slot_height*6+115, "move whole Pendulum"),
+        "label_instructionsRightClick_Red1" : Label(10, y_offset + slot_height*6+145, "Right Click - On RED node to "),
+        "label_instructionsRightClick_Red2" : Label(20, y_offset + slot_height*6+165, "move and swing the node")
         }
-        return lable_dict
+        return label_dict
 
     def create_Sidebar_button_dict(self,x_offset,y_offset,slot_height):
         #(x, y, width, height, color, hover_color, text='', font_size=20, text_color=(255, 255, 255), action=None)
@@ -150,19 +158,19 @@ class gui_createPendulum(gui_Sidebar):
     
     def create_createPendulum_widget_list(self):
         gui_widget_list = {
-        "labels"    :self.create_createPendulum_lable_dict(x_offset,y_offset,slot_height),
+        "labels"    :self.create_createPendulum_label_dict(x_offset,y_offset,slot_height),
         "buttons"   :self.create_createPendulum_button_dict(x_offset,y_offset,slot_height),
         #"sliders"   :self.create_createPendulum_slider_dict(x_offset,y_offset,slot_height)
         }
         return gui_widget_list
     
-    def create_createPendulum_lable_dict(self,x_offset,y_offset,slot_height):
+    def create_createPendulum_label_dict(self,x_offset,y_offset,slot_height):
         #(x, y, text, font_size=20, color=BLACK)
-        lable_dict = {
+        label_dict = {
         "label_createPendulum"  : Label(x_offset, y_offset, "Create Pendulum :", 37),
         "label_quickAddPendulum": Label(x_offset, y_offset + slot_height*1, "Quick add new Pendulum:")
         }
-        return lable_dict
+        return label_dict
 
     def create_createPendulum_button_dict(self,x_offset,y_offset,slot_height):
         #(x, y, width, height, color, hover_color, text='', font_size=20, text_color=(255, 255, 255), action=None)
@@ -262,7 +270,7 @@ class gui_editPendulum(gui_Sidebar):
     
     def create_pen_edit_widget_list(self):
         gui_widget_list = {
-        "labels"         :self.create_guiEdit_lable_dict(x_offset,y_offset,slot_height),
+        "labels"         :self.create_guiEdit_label_dict(x_offset,y_offset,slot_height),
         "toggleButtons"  :self.create_guiEdit_toggleButton_dict(x_offset,y_offset,slot_height),
         "radioButtons"   :self.create_guiEdit_radioButton_dict(x_offset,y_offset,slot_height),
         "buttons"        :self.create_guiEdit_button_dict(x_offset,y_offset,slot_height),
@@ -270,9 +278,9 @@ class gui_editPendulum(gui_Sidebar):
         }
         return gui_widget_list
 
-    def create_guiEdit_lable_dict(self,x_offset,y_offset,slot_height):
+    def create_guiEdit_label_dict(self,x_offset,y_offset,slot_height):
         #(x, y, text, font_size=20, color=BLACK)
-        lable_dict = {
+        label_dict = {
         "label_Pendulum_Number": Label(x_offset, y_offset,                 "Pendulum Edit:", 37),
         #"label_Pendulum_Type"  : Label(x_offset, y_offset + slot_height*1, "Pendulum Type:"),
         "label_Rod_Number"     : Label(x_offset, y_offset + slot_height*1, "Rod Selection:"),
@@ -285,7 +293,7 @@ class gui_editPendulum(gui_Sidebar):
         "label_TP_Dot"         : Label(x_offset+75, y_offset + slot_height*12-10,"Dot"),
         "label_TP_Line"        : Label(x_offset+165, y_offset + slot_height*12-10,"Line")
         }
-        return lable_dict
+        return label_dict
 
     def create_guiEdit_toggleButton_dict(self,x_offset,y_offset,slot_height):
         #(x, y, width, height, text, default=True, action=None)
@@ -568,17 +576,17 @@ class gui_startMenu(Gui):
     
     def create_startMenu_widget_list(self):
         gui_widget_list = {
-        "labels"         :self.create_guiEdit_lable_dict(slot_height),
+        "labels"         :self.create_guiEdit_label_dict(slot_height),
         "buttons"        :self.create_guiEdit_button_dict(slot_height)
         }
         return gui_widget_list
     
-    def create_guiEdit_lable_dict(self,slot_height):
+    def create_guiEdit_label_dict(self,slot_height):
         #(x, y, text, font_size=20, color=BLACK)
-        lable_dict = {
+        label_dict = {
         "label_Title_PendulumDemo": Label(WIDTH/2, slot_height*4,"Pendulum Demo", 80)
         }
-        return lable_dict
+        return label_dict
 
     def create_guiEdit_button_dict(self,slot_height):
         #(x, y, width, height, color, hover_color, text='', font_size=20, text_color=(255, 255, 255), action=None)
@@ -619,14 +627,14 @@ class gui_aboutMenu(Gui):
     
     def create_startMenu_widget_list(self):
         gui_widget_list = {
-        "labels"         :self.create_guiEdit_lable_dict(x_offset,y_offset,slot_height),
+        "labels"         :self.create_guiEdit_label_dict(x_offset,y_offset,slot_height),
         "buttons"        :self.create_guiEdit_button_dict(x_offset,y_offset,slot_height)
         }
         return gui_widget_list
     
-    def create_guiEdit_lable_dict(self,x_offset,y_offset,slot_height):
+    def create_guiEdit_label_dict(self,x_offset,y_offset,slot_height):
         #(x, y, text, font_size=20, color=BLACK)
-        lable_dict = {
+        label_dict = {
         "label_Title_PendulumDemo": Label(WIDTH/8, slot_height*1,"About Pendulum Demo", 40),
         "label_Text1_1": Label(WIDTH/10, slot_height*3,
                              "The Pendulum Demo project explores the motion of single and double pendulums."),
@@ -637,7 +645,7 @@ class gui_aboutMenu(Gui):
         "label_Text2_2": Label(WIDTH/10, slot_height*6+25,
                              "while combining my interest in physics and programming. It demonstrates my ability to build interactive applications")
         }
-        return lable_dict
+        return label_dict
 
     def create_guiEdit_button_dict(self,x_offset,y_offset,slot_height):
         #(x, y, width, height, color, hover_color, text='', font_size=20, text_color=(255, 255, 255), action=None)

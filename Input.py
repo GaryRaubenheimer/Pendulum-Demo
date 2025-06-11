@@ -1,7 +1,10 @@
 import math
 
-from Pendulum_Demo import pygame
+from game_context import get_pygame
 from constants import *
+
+# Get pygame instance from game context
+pygame = get_pygame()
 
 class Mouse:
     def __init__(self):
@@ -43,19 +46,21 @@ class Mouse:
             elif self.collision_pin_check(rod.pin_2):
                 self.collision_item = [pen, rod.pin_2]
 
-    def get_displaysment(self):
+    def get_displacement(self):
         dx = self.curr_mouse_pos[0] - self.prev_mouse_pos[0]
         dy = self.curr_mouse_pos[1] - self.prev_mouse_pos[1]
         return [dx, dy]
 
     def get_velocity(self, time):
-        distance = self.get_displaysment()
-        dx_speed = distance[0] / time if time > 0 else 0
-        dy_speed = distance[1] / time if time > 0 else 0
+        distance = self.get_displacement()
+        if time <= 0:
+            return [0, 0]
+        dx_speed = distance[0] / time
+        dy_speed = distance[1] / time
         return [dx_speed, dy_speed]
 
     def direction_angle_from_vertical(self):
-        distance = self.get_displaysment()
+        distance = self.get_displacement()
         if distance[0] == 0 and distance[1] == 0:
             return 0
         return math.pi - math.atan2(distance[0], distance[1])

@@ -1,9 +1,12 @@
 import math
 import colour 
 
-from Pendulum_Demo import pygame
+from game_context import get_pygame
 from constants import *
 from Physics import *
+
+# Get pygame instance from game context
+pygame = get_pygame()
 
 # Constants
 PIN2_WEIGHT_SINGLE = 5

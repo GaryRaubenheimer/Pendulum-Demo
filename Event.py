@@ -2,9 +2,10 @@ import math
 import Gui
 import constants
 
-from Pendulum_Demo import pygame
-#from constants import *
-#from Gui import *
+from game_context import get_pygame
+
+# Get pygame instance from game context
+pygame = get_pygame()
 
 #---
 # get all events from pygame

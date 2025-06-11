@@ -1,4 +1,7 @@
-from Pendulum_Demo import pygame
+from game_context import get_pygame
+
+# Get pygame instance from game context
+pygame = get_pygame()
 
 from colour import *
 from constants import *
@@ -147,11 +150,17 @@ class Slider:
         self.height = height
         self.min_value = min_value
         self.max_value = max_value
-        self.real_value = real_value 
-        if (max_value-min_value) != 0:
-            self.value = (real_value-min_value)/(max_value-min_value)
+        
+        # Input validation: ensure real_value is within bounds
+        self.real_value = max(min_value, min(real_value, max_value))
+        
+        # Prevent division by zero
+        range_diff = max_value - min_value
+        if range_diff != 0:
+            self.value = (self.real_value - min_value) / range_diff
         else:
-            self.value = 0 
+            self.value = 0
+            
         self.color = color
         self.dragging = False
         self.slider_button_radius = 10
@@ -193,9 +202,13 @@ class Slider:
     def get_real_value(self):
         return self.real_value
     
-    def change_value_to(self,value):
-        self.real_value = value 
-        if (self.max_value-self.min_value) != 0:
-            self.value = (self.real_value-self.min_value)/(self.max_value-self.min_value)
+    def change_value_to(self, value):
+        # Input validation: ensure value is within bounds
+        self.real_value = max(self.min_value, min(value, self.max_value))
+        
+        # Prevent division by zero
+        range_diff = self.max_value - self.min_value
+        if range_diff != 0:
+            self.value = (self.real_value - self.min_value) / range_diff
         else:
             self.value = 0 
