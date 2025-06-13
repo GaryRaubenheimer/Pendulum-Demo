@@ -245,6 +245,9 @@ class Slider:
                 self.action(self)
 
     def handle_event(self, event):
+        if event is None:
+            return
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             slider_button_x = int(self.x + self.width * self.value)

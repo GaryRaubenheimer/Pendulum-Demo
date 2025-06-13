@@ -1,5 +1,4 @@
 import math
-import Gui
 import constants
 
 from game_context import get_pygame
@@ -40,6 +39,10 @@ def handle_event_buffer(events, M, ui):
             for _category, widgets in ui.gui_widget_list.items():
                 for _name, widget in widgets.items():
                     widget.handle_event(event)
+    # Initialize create pendulum widgets if in create state
+    if ui.inCreate == True and not ui.gui_widget_list:
+        ui.gui_widget_list = ui.initialize_createPendulum()
+    
     return ui
 
 
@@ -52,10 +55,9 @@ def handle_mouse_button_down(event, M, pen_array):
             pen.isSelected = False
     elif event.button == 2:  # Middle mouse button pressed
         for pen in pen_array:
-            for pen in pen_array:
-                M.collision_pen_check(pen)
-                if M.collision_item and M.collision_item[0] != pen:
-                    pen.isSelected = False
+            M.collision_pen_check(pen)
+            if M.collision_item and M.collision_item[0] != pen:
+                pen.isSelected = False
         if M.collision_item:
             M.collision_item[0].isSelected = True
     elif event.button == 3:  # Right mouse button pressed
@@ -76,15 +78,10 @@ def handle_mouse_button_up(event, M, ui):
     elif event.button == 3:
         M.right_held = False
         if M.collision_item and not M.left_held:
-            ui = Gui.changeGui("EDIT")
-            # ui.change_sidebar_state("EDIT")
-            if ui.sidebarState == "EDIT":
-                ui.change_guiEdit_widget_info(M.collision_item[0])
+            # Use the new state pattern method
+            if hasattr(ui, "change_sidebarStateToEdit"):
+                ui.change_sidebarStateToEdit(M.collision_item[0])
             M.collision_item = None
-        else:
-            # ui.kill_gui_widget_list()
-            ui = Gui.changeGui("INFO")
-            # ui.change_sidebar_state("INFO")
     elif event.button == 2:  # middle mouse button and remove pendulum
         if M.collision_item and not M.left_held and not M.right_held:
             constants.pen_array.remove(M.collision_item[0])
